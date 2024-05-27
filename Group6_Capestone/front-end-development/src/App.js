@@ -1,25 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import UserLanding from "./pages/User/UserLanding";
+import AdministrationLanding from "./pages/Administration/AdministrationLanding";
+import AdministrationLogin from "./pages/Administration/AdministrationLogin";
+import Login from "./pages/User/Login";
+import Register from "./pages/User/Login";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import "./App.css";
+
+const App = () => (
+  <Router>
+    <Routes>
+      <Route path="/" element={<UserLanding />} />
+      <Route
+        path="/healthease-administration-landing-page"
+        element={<AdministrationLanding />}
+      />
+      <Route path="/Login" element={<Login />} />
+      <Route path="/Register" element={<Register />} />
+
+      <Route path="/administrationLogin" element={<AdministrationLogin />} />
+    </Routes>
+  </Router>
+);
 
 export default App;
