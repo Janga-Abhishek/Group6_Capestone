@@ -4,7 +4,7 @@ import UserLanding from "./pages/User/UserLanding";
 import AdministrationLanding from "./pages/Administration/AdministrationLanding";
 import AdministrationLogin from "./pages/Administration/AdministrationLogin";
 import Login from "./pages/User/Login";
-import Register from "./pages/User/Login";
+import Register from "./pages/User/Register";
 
 import "./App.css";
 
@@ -17,7 +17,7 @@ const App = () => (
         element={<AdministrationLanding />}
       />
       <Route path="/Login" element={<Login />} />
-      <Route path="/Register" element={<Register />} />
+      <Route path="/register" element={<Register />} />
 
       <Route path="/administrationLogin" element={<AdministrationLogin />} />
     </Routes>

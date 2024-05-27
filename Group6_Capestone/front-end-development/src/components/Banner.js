@@ -3,11 +3,14 @@ import React from "react";
 const bannerStyle = {
   textAlign: "center",
   padding: "20px",
+  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+  marginTop: "5%",
 };
 
 const imgStyle = {
   width: "100%",
   objectFit: "cover",
+  boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
 };
 
 const h1Style = {
