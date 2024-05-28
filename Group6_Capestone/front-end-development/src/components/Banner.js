@@ -8,7 +8,7 @@ const bannerStyle = {
 };
 
 const imgStyle = {
-  width: "100%",
+  width: "90%",
   objectFit: "cover",
   boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
 };

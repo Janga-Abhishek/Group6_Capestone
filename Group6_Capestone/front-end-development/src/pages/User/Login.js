@@ -8,14 +8,15 @@ const containerStyle = {
   flexDirection: "column",
   justifyContent: "flex-start",
   alignItems: "center",
-  height: "95vh",
   backgroundImage: "url('/images/login_background.png')",
   backgroundSize: "cover",
+  height: "100vh",
+  width: "100%",
 };
 
 const formStyle = {
   backgroundColor: "#fff",
-  padding: "50px",
+  padding: "3%",
   boxShadow: "22px 22px 5px rgba(0, 0, 0, 0.1)",
   border: "10px solid #1192DC",
   borderRadius: "60px",
