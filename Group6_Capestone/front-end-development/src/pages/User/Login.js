@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useMutation } from "@apollo/client";
+import { LOGIN_USER } from "../../graphql/mutations";
 import Menu from "../../components/Menu";
 import "./UserStyles.css";
 
@@ -44,15 +46,18 @@ const buttonStyle = {
   margin: "3%",
   transition: "background-color 0.3s ease",
 };
+
 const buttonHoverStyle = {
   backgroundColor: "#0a71b5",
 };
+
 const linkStyle = {
   display: "block",
   marginTop: "10px",
   color: "#333",
   textDecoration: "none",
 };
+
 const logoStyle = {
   height: "120px",
   width: "auto",
@@ -72,10 +77,11 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isButtonHovered, setIsButtonHovered] = useState(false);
+  const [loginUser, { loading, error }] = useMutation(LOGIN_USER);
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     if (!username) {
       setUsernameError("Username is required");
@@ -85,9 +91,19 @@ const Login = () => {
       setPasswordError("Password is required");
       return;
     }
-    setUsernameError("");
-    setPasswordError("");
-    alert(`Logging in as user with username: ${username}`);
+    try {
+      const { data } = await loginUser({
+        variables: { email: username, password },
+      });
+      if (data && data.loginUser) {
+        alert(`Logging in as user with username: ${username}`);
+        //window.location.href = "/user_dashboard";
+      } else {
+        alert("Invalid credentials");
+      }
+    } catch (error) {
+      console.error("Error logging in:", error);
+    }
   };
 
   return (
@@ -98,8 +114,6 @@ const Login = () => {
           <img src="/images/HealthEase_logo.png" alt="Logo" style={logoStyle} />
           <h2>User Login</h2>
           <div>
-            {" "}
-            {/* Container for username input and error */}
             <input
               type="text"
               placeholder="Username"
@@ -113,8 +127,6 @@ const Login = () => {
             {usernameError && <span style={errorStyle}>{usernameError}</span>}
           </div>
           <div>
-            {" "}
-            {/* Container for password input and error */}
             <input
               type="password"
               placeholder="Password"
@@ -132,12 +144,14 @@ const Login = () => {
             style={{ ...buttonStyle, ...(isButtonHovered && buttonHoverStyle) }}
             onMouseEnter={() => setIsButtonHovered(true)}
             onMouseLeave={() => setIsButtonHovered(false)}
+            disabled={loading}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
           <Link to="/register" style={linkStyle}>
             New user? Register here
           </Link>
+          {error && <span style={errorStyle}>Error: {error.message}</span>}
         </form>
       </div>
     </div>
