@@ -50,7 +50,7 @@ const buttonContainerStyle = {
 };
 
 const UserLanding = () => (
-  <LandingPage bannerText="Welcome to HealthEase">
+  <LandingPage>
     <div style={containerStyle}>
       <h1>Our Services</h1>
       <div style={testAndImageContainerStyle}>
