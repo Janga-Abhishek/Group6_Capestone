@@ -62,13 +62,31 @@ const logoStyle = {
   animation: "rotateCoin 3s infinite",
 };
 
+const errorStyle = {
+  color: "red",
+  fontSize: "0.8em",
+  float: "left",
+};
+
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isButtonHovered, setIsButtonHovered] = useState(false);
+  const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
+    if (!username) {
+      setUsernameError("Username is required");
+      return;
+    }
+    if (!password) {
+      setPasswordError("Password is required");
+      return;
+    }
+    setUsernameError("");
+    setPasswordError("");
     alert(`Logging in as user with username: ${username}`);
   };
 
@@ -79,20 +97,36 @@ const Login = () => {
         <form style={formStyle} onSubmit={handleLogin}>
           <img src="/images/HealthEase_logo.png" alt="Logo" style={logoStyle} />
           <h2>User Login</h2>
-          <input
-            type="text"
-            placeholder="Username"
-            style={inputStyle}
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            style={inputStyle}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div>
+            {" "}
+            {/* Container for username input and error */}
+            <input
+              type="text"
+              placeholder="Username"
+              style={inputStyle}
+              value={username}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                setUsernameError("");
+              }}
+            />
+            {usernameError && <span style={errorStyle}>{usernameError}</span>}
+          </div>
+          <div>
+            {" "}
+            {/* Container for password input and error */}
+            <input
+              type="password"
+              placeholder="Password"
+              style={inputStyle}
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setPasswordError("");
+              }}
+            />
+            {passwordError && <span style={errorStyle}>{passwordError}</span>}
+          </div>
           <button
             type="submit"
             style={{ ...buttonStyle, ...(isButtonHovered && buttonHoverStyle) }}

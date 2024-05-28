@@ -10,7 +10,6 @@ const bannerStyle = {
 const imgStyle = {
   width: "90%",
   objectFit: "cover",
-  
 };
 
 const h1Style = {

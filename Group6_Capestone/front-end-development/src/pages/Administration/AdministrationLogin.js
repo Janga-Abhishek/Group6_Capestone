@@ -61,14 +61,32 @@ const logoStyle = {
   animation: "rotateCoin 3s infinite",
 };
 
+const errorStyle = {
+  color: "red",
+  fontSize: "0.8em",
+  float: "left",
+};
+
 const AdministrationLogin = () => {
   const [userType, setUserType] = useState("admin");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isButtonHovered, setIsButtonHovered] = useState(false);
+  const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
+    if (!username) {
+      setUsernameError("Username is required");
+      return;
+    }
+    if (!password) {
+      setPasswordError("Password is required");
+      return;
+    }
+    setUsernameError("");
+    setPasswordError("");
     alert(`Logging in as ${userType} with username: ${username}`);
   };
 
@@ -85,16 +103,25 @@ const AdministrationLogin = () => {
             placeholder="Username"
             style={inputStyle}
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => {
+              setUsername(e.target.value);
+              setUsernameError("");
+            }}
           />
+          {usernameError && <span style={errorStyle}>{usernameError}</span>}
           <input
             type="password"
             placeholder="Password"
             style={inputStyle}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setPasswordError("");
+            }}
           />
-          <lable style={{ float: "left" }}>Login as</lable>
+          {passwordError && <span style={errorStyle}>{passwordError}</span>}
+          <br />
+          <label style={{ float: "left" }}>Login as</label>
           <select
             style={dropdownStyle}
             value={userType}
@@ -116,5 +143,4 @@ const AdministrationLogin = () => {
     </div>
   );
 };
-
 export default AdministrationLogin;
