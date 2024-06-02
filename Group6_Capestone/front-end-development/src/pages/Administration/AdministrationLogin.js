@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Menu from "../../components/Menu";
+import { useMutation } from "@apollo/client";
+import { LOGIN_USER } from "../../graphql/mutations";
 
 const containerStyle = {
   display: "flex",
@@ -42,9 +44,11 @@ const buttonStyle = {
   margin: "3%",
   transition: "background-color 0.3s ease",
 };
+
 const buttonHoverStyle = {
   backgroundColor: "#0a71b5",
 };
+
 const dropdownStyle = {
   width: "100%",
   padding: "10px",
@@ -52,6 +56,7 @@ const dropdownStyle = {
   border: "1px solid #ccc",
   margin: "3%",
 };
+
 const logoStyle = {
   height: "120px",
   width: "auto",
@@ -74,8 +79,9 @@ const AdministrationLogin = () => {
   const [isButtonHovered, setIsButtonHovered] = useState(false);
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [loginUser, { loading, error }] = useMutation(LOGIN_USER);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     if (!username) {
       setUsernameError("Username is required");
@@ -87,7 +93,33 @@ const AdministrationLogin = () => {
     }
     setUsernameError("");
     setPasswordError("");
-    alert(`Logging in as ${userType} with username: ${username}`);
+
+    try {
+      const { data } = await loginUser({
+        variables: { username, password, userType },
+      });
+
+      if (data && data.loginUser) {
+        const user = data.loginUser;
+        if (user.userType !== userType) {
+          alert("User type doesn't match");
+          return;
+        }
+
+        // alert(`Logging in as ${userType} with username: ${username}`);
+
+        if (userType === "admin") {
+          window.location.href = "/adminDashboard";
+        } else if (userType === "doctor") {
+          window.location.href = "/doctorDashboard";
+        }
+      } else {
+        alert("Invalid credentials1");
+      }
+    } catch (error) {
+      console.error("Error logging in:", error);
+      alert("Invalid credentials2");
+    }
   };
 
   return (
@@ -96,7 +128,6 @@ const AdministrationLogin = () => {
       <div style={containerStyle}>
         <form style={formStyle} onSubmit={handleLogin}>
           <img src="/images/HealthEase_logo.png" alt="Logo" style={logoStyle} />
-
           <h2>Login</h2>
           <input
             type="text"
@@ -143,4 +174,5 @@ const AdministrationLogin = () => {
     </div>
   );
 };
+
 export default AdministrationLogin;

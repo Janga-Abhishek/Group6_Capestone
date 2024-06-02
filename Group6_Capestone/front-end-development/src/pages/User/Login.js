@@ -93,11 +93,11 @@ const Login = () => {
     }
     try {
       const { data } = await loginUser({
-        variables: { email: username, password },
+        variables: { username: username, password },
       });
       if (data && data.loginUser) {
         alert(`Logging in as user with username: ${username}`);
-        //window.location.href = "/user_dashboard";
+        window.location.href = "/userDashboard";
       } else {
         alert("Invalid credentials");
       }

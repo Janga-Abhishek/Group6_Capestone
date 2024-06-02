@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 import Menu from "../../components/Menu";
 import "./UserStyles.css";
 
@@ -12,7 +12,6 @@ const formStyle = {
   width: "350px",
   textAlign: "center",
   marginTop: "5%",
-  
 };
 
 const buttonStyle = {
@@ -29,12 +28,12 @@ const buttonStyle = {
 const buttonHoverStyle = {
   backgroundColor: "#0a71b5",
 };
-const linkStyle = {
-  display: "block",
-  marginTop: "10px",
-  color: "#333",
-  textDecoration: "none",
-};
+// const linkStyle = {
+//   display: "block",
+//   marginTop: "10px",
+//   color: "#333",
+//   textDecoration: "none",
+// };
 
 const inputStyle = {
   width: "100%",
@@ -42,9 +41,7 @@ const inputStyle = {
   margin: "10px 0",
   borderRadius: "4px",
   border: "1px solid #ccc",
-  
 };
-
 
 const containerStyle = {
   display: "flex",
@@ -66,12 +63,10 @@ const logoStyle = {
   animation: "rotateCoin 3s infinite",
 };
 
-
-const handleRegistration = (e) =>{
+const handleRegistration = (e) => {
   e.preventDefault();
-  // Add validation and registration logic here
+
   console.log("form");
- // navigate("/login"); // Redirect to login page after successful registration
 };
 
 const Register = () => {
@@ -85,14 +80,14 @@ const Register = () => {
   const [rePassword, setRePassword] = useState("");
   const [isButtonHovered, setIsButtonHovered] = useState(false);
 
- return(
-  <div>
-    <Menu/>
-    <div style={containerStyle}>
-      <form style={formStyle} onSubmit={handleRegistration}>
-      <img src="/images/HealthEase_logo.png" alt="Logo" style={logoStyle} />
-        <h2>USER REGISTRATION</h2>
-        <input
+  return (
+    <div>
+      <Menu />
+      <div style={containerStyle}>
+        <form style={formStyle} onSubmit={handleRegistration}>
+          <img src="/images/HealthEase_logo.png" alt="Logo" style={logoStyle} />
+          <h2>USER REGISTRATION</h2>
+          <input
             type="text"
             placeholder="First Name"
             style={inputStyle}
@@ -156,11 +151,10 @@ const Register = () => {
           >
             Register
           </button>
-
-      </form>
+        </form>
+      </div>
     </div>
-  </div>
- );
+  );
 };
 
 export default Register;
