@@ -1,34 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-
-const containerStyle = {
-  paddingTop: "50px",
-};
-const menuStyle = {
-  backgroundColor: "#1192DC",
-  overflow: "hidden",
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  padding: "10px 20px",
-  position: "fixed",
-  width: "100%",
-  top: 0,
-  boxSizing: "border-box",
-  transition: "box-shadow 0.3s ease",
-};
-
-const ulStyle = {
-  listStyleType: "none",
-  margin: 0,
-  padding: 0,
-  display: "flex",
-  alignItems: "center",
-};
-
-const liStyle = {
-  marginLeft: "10px",
-};
+import "../Stylesheet/Menu.css";
 
 const linkStyle = {
   display: "block",
@@ -67,13 +39,8 @@ const Menu = () => {
   }, []);
 
   return (
-    <div style={containerStyle}>
-      <nav
-        style={{
-          ...menuStyle,
-          boxShadow: hasShadow ? "0 8px 16px rgba(0, 0, 0, 0.3)" : "none",
-        }}
-      >
+    <div className="containerStyle">
+      <nav className={`menuStyle ${hasShadow ? "hasShadow" : ""}`}>
         <Link
           to="/"
           style={{
@@ -96,10 +63,10 @@ const Menu = () => {
           />
           <h1 style={{ margin: 0, fontSize: "24px" }}>HealthEase</h1>
         </Link>
-        <ul style={ulStyle}>
+        <ul className="ulStyle">
           {isUserPage && (
             <>
-              <li style={liStyle}>
+              <li className="liStyle">
                 <Link
                   to="/Login"
                   style={
@@ -113,7 +80,7 @@ const Menu = () => {
                   Login
                 </Link>
               </li>
-              <li style={liStyle}>
+              <li className="liStyle">
                 <Link
                   to="/register"
                   style={
@@ -130,7 +97,7 @@ const Menu = () => {
             </>
           )}
           {isAdministrationPage && (
-            <li style={liStyle}>
+            <li className="liStyle">
               <Link
                 to="/administrationLogin"
                 style={

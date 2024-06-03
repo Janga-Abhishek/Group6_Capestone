@@ -1,0 +1,45 @@
+.containerStyle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.testAndImageContainerStyle {
+  display: flex;
+  margin: 20px;
+  width: 50%;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 3%;
+  border-top-right-radius: 20%;
+  border-bottom-left-radius: 20%;
+  box-shadow: 0 8px 16px rgba(17 146 300 0.5);
+}
+
+.ServicesStyle {
+  padding: 20px;
+  margin-right: 20px;
+  flex: 1;
+}
+
+.imageStyle {
+  max-width: 300px;
+  border: 2px solid black;
+  border-radius: 50%;
+  box-shadow: 0 8px 16px rgba(17, 146, 300, 0.5);
+}
+.headingStyle {
+  font-size: 1.5em;
+  margin: 0 0 10px 0;
+}
+
+.paragraphStyle {
+  font-size: 1em;
+  line-height: 1.5;
+  margin: 0 0 10px 0;
+}
+.buttonContainerStyle {
+  margin-top: 20px;
+  text-align: center;
+}
