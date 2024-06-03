@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Menu from "../../components/Menu";
+import Banner from "../../components/Banner";
+import Footer from "../../components/Footer";
 
 const containerStyle = {
   display: "flex",
@@ -8,17 +10,7 @@ const containerStyle = {
   justifyContent: "flex-start",
   alignItems: "center",
   backgroundColor: "#f9f9f9",
-  minHeight: "100vh",
   width: "100%",
-};
-
-const bannerStyle = {
-  width: "100%",
-  height: "300px",
-  backgroundImage: "url('/images/banner_image.png')",
-  backgroundSize: "cover",
-  backgroundPosition: "center",
-  marginBottom: "20px",
 };
 
 const navContainerStyle = {
@@ -34,41 +26,70 @@ const navButtonStyle = {
   alignItems: "center",
   textDecoration: "none",
   color: "#333",
+  border: "3px solid black",
+  margin: "1%",
+  padding: "3%",
+  backgroundColor: "#1292DC",
+  width: "33.33%",
 };
 
 const navImageStyle = {
-  width: "100px",
-  height: "100px",
+  width: "80%",
+  height: "80%",
   marginBottom: "10px",
+  borderRadius: "20%",
+  border: "2px dotted black",
 };
 
 const navTextStyle = {
-  fontSize: "1.1em",
+  fontSize: "1.2em",
   fontWeight: "bold",
+  color: "white",
 };
 
 const UserDashboard = () => {
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const storedUsername = sessionStorage.getItem("username");
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
+
   return (
     <div>
       <Menu />
+      <div style={{ marginTop: "20px", float: "right", marginRight: "20px" }}>
+        {username && (
+          <h2 style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}>
+            Welcome, {username}!
+          </h2>
+        )}
+      </div>
+
+      <Banner />
       <div style={containerStyle}>
-        <div style={bannerStyle}></div>
         <div style={navContainerStyle}>
-          <Link to="/profile" style={navButtonStyle}>
-            <img src="/images/test.png" alt="Profile" style={navImageStyle} />
-            <span style={navTextStyle}>Profile</span>
-          </Link>
           <Link to="/appointments" style={navButtonStyle}>
             <img
-              src="/images/test.png"
+              src="/images/appointment.png"
               alt="Appointments"
               style={navImageStyle}
             />
             <span style={navTextStyle}>Appointments</span>
           </Link>
+          <Link to="/uploadPrescription" style={navButtonStyle}>
+            <img
+              src="/images/HealthEase_logo.png"
+              alt="upload prescription"
+              style={navImageStyle}
+            />
+            <span style={navTextStyle}>Upload Prescription</span>
+          </Link>
           <Link to="/medical_records" style={navButtonStyle}>
             <img
-              src="/images/test.png"
+              src="/images/medicalRecords.png"
               alt="Medical Records"
               style={navImageStyle}
             />
@@ -76,6 +97,7 @@ const UserDashboard = () => {
           </Link>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

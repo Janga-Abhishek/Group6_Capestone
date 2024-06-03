@@ -22,9 +22,11 @@ const Menu = () => {
   const [hasShadow, setHasShadow] = useState(false);
   const location = useLocation();
 
-  const isUserPage = location.pathname === "/";
-  const isAdministrationPage =
+  const isUserLandingPage = location.pathname === "/";
+  const isAdministrationLandingPage =
     location.pathname === "/healthease-administration-landing-page";
+  const isLogin = location.pathname === "/Login";
+  const isRegister = location.pathname === "/register";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -64,7 +66,7 @@ const Menu = () => {
           <h1 style={{ margin: 0, fontSize: "24px" }}>HealthEase</h1>
         </Link>
         <ul className="ulStyle">
-          {isUserPage && (
+          {isUserLandingPage && (
             <>
               <li className="liStyle">
                 <Link
@@ -96,10 +98,42 @@ const Menu = () => {
               </li>
             </>
           )}
-          {isAdministrationPage && (
+          {isAdministrationLandingPage && (
             <li className="liStyle">
               <Link
                 to="/administrationLogin"
+                style={
+                  hoverIndex === 2
+                    ? { ...linkStyle, ...linkHoverStyle }
+                    : linkStyle
+                }
+                onMouseEnter={() => setHoverIndex(2)}
+                onMouseLeave={() => setHoverIndex(null)}
+              >
+                Login
+              </Link>
+            </li>
+          )}
+          {isLogin && (
+            <li className="liStyle">
+              <Link
+                to="/register"
+                style={
+                  hoverIndex === 2
+                    ? { ...linkStyle, ...linkHoverStyle }
+                    : linkStyle
+                }
+                onMouseEnter={() => setHoverIndex(2)}
+                onMouseLeave={() => setHoverIndex(null)}
+              >
+                Register
+              </Link>
+            </li>
+          )}
+          {isRegister && (
+            <li className="liStyle">
+              <Link
+                to="/login"
                 style={
                   hoverIndex === 2
                     ? { ...linkStyle, ...linkHoverStyle }

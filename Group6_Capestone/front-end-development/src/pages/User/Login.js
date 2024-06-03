@@ -48,7 +48,9 @@ const Login = () => {
         variables: { username: username, password },
       });
       if (data && data.loginUser) {
-        // alert(`Logging in as user with username: ${username}`);
+        console.log(data);
+        // Store the username in the session storage
+        sessionStorage.setItem("username", username);
         window.location.href = "/userDashboard";
       } else {
         setLoginError("Invalid credentials");
