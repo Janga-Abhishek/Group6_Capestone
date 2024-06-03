@@ -15,6 +15,7 @@ const UserSchema = new mongoose.Schema({
   username: String,
   email: String,
   password: String,
+  userType: String,
 });
 
 const User = mongoose.model("User", UserSchema);
@@ -25,6 +26,7 @@ const typeDefs = gql`
     id: ID!
     username: String!
     email: String!
+    userType: String!
   }
 
   type Query {
@@ -33,8 +35,13 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    register(username: String!, email: String!, password: String!): User
-    loginUser(email: String!, password: String!): User
+    register(
+      username: String!
+      email: String!
+      password: String!
+      userType: String!
+    ): User
+    loginUser(username: String!, password: String!): User
   }
 `;
 
@@ -59,18 +66,18 @@ const resolvers = {
     },
   },
   Mutation: {
-    register: async (_, { username, email, password }) => {
+    register: async (_, { username, email, password, userType }) => {
       try {
-        const user = new User({ username, email, password });
+        const user = new User({ username, email, password, userType });
         await user.save();
         return user;
       } catch (error) {
         throw new Error("Error registering user");
       }
     },
-    loginUser: async (_, { email, password }) => {
+    loginUser: async (_, { username, password }) => {
       try {
-        const user = await User.findOne({ email, password });
+        const user = await User.findOne({ username, password });
         if (!user) {
           throw new Error("Invalid credentials");
         }

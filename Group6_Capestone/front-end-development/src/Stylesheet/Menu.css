@@ -1,0 +1,48 @@
+.containerStyle {
+  padding-top: 50px;
+}
+
+.menuStyle {
+  background-color: #1192dc;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  box-sizing: border-box;
+  transition: box-shadow 0.3s ease;
+  z-index: 1000;
+}
+.hasShadow {
+  box-shadow: 0 8px 15px 0px gray;
+}
+
+.ulStyle {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.liStyle {
+  margin-left: 10px;
+}
+
+.linkStyle {
+  display: block;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  padding: 10px;
+}
+
+.linkHoverStyle {
+  background-color: #0a71b5;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  transform: scale(1.1) translateY(-5px);
+  border-radius: 8px;
+}
