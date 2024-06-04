@@ -7,7 +7,7 @@ import AdministrationLogin from "./pages/Administration/AdministrationLogin";
 import Login from "./pages/User/Login";
 import Register from "./pages/User/Register";
 import DoctorDashboard from "./pages/Administration/Doctor/DoctorDashboard";
-import AdminDashboard from "./pages/Administration/Admin/AdminDashboard";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
 
 import "./App.css";
 import UserDashboard from "./pages/User/UserDashboard";
