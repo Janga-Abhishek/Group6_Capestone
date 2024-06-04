@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 // Connect to MongoDB
 mongoose
   .connect(
-    "mongodb+srv://jangaabhishek:abhishekjanga@cluster0.iivycnm.mongodb.net/Group6_Capestone?retryWrites=true&w=majority",
+    "mongodb+srv://revathysasi01:123Mongodb@cluster0.fxezvmm.mongodb.net/Group6_Capestone?retryWrites=true&w=majority",
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => console.log("MongoDB connection successful"))
@@ -12,9 +12,14 @@ mongoose
 
 // Define User schema
 const UserSchema = new mongoose.Schema({
-  username: String,
+  firstname:String,
+  lastname:String,
   email: String,
+  phonenumber:String,
+  address:String,
+  username: String,
   password: String,
+  insuranceNumber:String,
   userType: String,
 });
 
@@ -24,9 +29,16 @@ const User = mongoose.model("User", UserSchema);
 const typeDefs = gql`
   type User {
     id: ID!
-    username: String!
+    firstname:String!
+    lastname:String!
     email: String!
+    phonenumber:String!
+    address:String!
+    insuranceNumber:String!
+    username: String!
+    password: String!
     userType: String!
+     
   }
 
   type Query {
@@ -35,9 +47,14 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    register(
-      username: String!
+    RegisterUser(
+      firstname:String!
+      lastname:String!
       email: String!
+      phonenumber:String!
+      address:String!
+      insuranceNumber:String!
+      username: String!
       password: String!
       userType: String!
     ): User
@@ -66,9 +83,9 @@ const resolvers = {
     },
   },
   Mutation: {
-    register: async (_, { username, email, password, userType }) => {
+    RegisterUser: async (_, { firstname,lastname, email,phonenumber,address,insuranceNumber,username, password, userType }) => {
       try {
-        const user = new User({ username, email, password, userType });
+        const user = new User({ firstname,lastname, email,phonenumber,address,insuranceNumber,username, password, userType });
         await user.save();
         return user;
       } catch (error) {

@@ -5,7 +5,7 @@
   align-items: center;
   background-image: url("../../public/images/login_background.png");
   background-size: cover;
-  height: 100vh;
+  height: 150vh;
   width: 100%;
 }
 
@@ -15,9 +15,10 @@
   box-shadow: 22px 22px 5px rgba(0, 0, 0, 0.1);
   border: 10px solid #1192dc;
   border-radius: 60px;
-  width: 350px;
+  width: 450px;
   text-align: center;
   margin-top: 5%;
+  margin-bottom: 10%;
 }
 
 .inputStyle {
@@ -35,7 +36,7 @@
   align-items: center;
   background-image: url("../../public/images/login_background.png");
   background-size: cover;
-  height: 130vh;
+  height: 150vh;
   width: 100%;
 }
 .AdministrationContainerStyle {
@@ -88,4 +89,10 @@
   100% {
     transform: rotateY(360deg);
   }
+}
+
+.successMessageStyle {
+  color: green;
+  font-size: 0.8em;
+  float: left;
 }
