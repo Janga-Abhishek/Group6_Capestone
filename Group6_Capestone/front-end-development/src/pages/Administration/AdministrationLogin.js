@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Menu from "../../components/Menu";
 import { useMutation } from "@apollo/client";
-import { LOGIN_USER } from "../../graphql/mutations";
+import { LOGIN_USER } from "../../graphql/middleware";
 import "../../Stylesheet/Login_Register.css";
 
 const buttonStyle = {

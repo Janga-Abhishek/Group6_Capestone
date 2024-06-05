@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Menu from "../../components/Menu";
 import "../../Stylesheet/Login_Register.css";
 import { useMutation } from "@apollo/client";
-import { REGISTER_USER } from "../../graphql/mutations";
+import { REGISTER_USER } from "../../graphql/middleware";
 
 const buttonStyle = {
   width: "100%",
@@ -20,12 +20,11 @@ const buttonHoverStyle = {
   backgroundColor: "#0a71b5",
 };
 
-
 const Register = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [username,setUsername] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [insuranceNumber, setInsuranceNumber] = useState("");
   const [address, setAddress] = useState("");
@@ -33,22 +32,19 @@ const Register = () => {
   const [rePassword, setRePassword] = useState("");
   const [isButtonHovered, setIsButtonHovered] = useState(false);
 
-  
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [emailError, setEmailError] = useState("");
-  const [usernameError,setUsernameError]=useState("");
+  const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [insuranceNumberError, setInsuranceNumberError] = useState("");
   const [addressError, setAddressError] = useState("");
   const [phoneNumberError, setPhoneNumberError] = useState("");
   const [rePasswordError, setRePasswordError] = useState("");
-  const[registrationUpdate,setRegistrationUpdate]= useState("");
+  const [registrationUpdate, setRegistrationUpdate] = useState("");
   const [registerUser] = useMutation(REGISTER_USER);
 
-
   const handleRegistration = async (e) => {
-
     e.preventDefault();
 
     if (!validateForm()) {
@@ -66,28 +62,24 @@ const Register = () => {
           insuranceNumber: insuranceNumber,
           username: username,
           password: password,
-          userType: "patient" 
-        }
-        
+          userType: "patient",
+        },
       });
-      
+
       console.log("User registered successfully:", data);
       setRegistrationUpdate("Registration is Successful");
     } catch (error) {
       console.error("Error Registering User:", error);
-      
     }
-  
   };
 
-  const validateForm = ()=>{
-
-   // validation for name
-    if(!firstName){
+  const validateForm = () => {
+    // validation for name
+    if (!firstName) {
       setFirstNameError("First Name is required!");
       return false;
     }
-    if(!lastName){
+    if (!lastName) {
       setLastNameError("Last Name is required!");
       return false;
     }
@@ -96,24 +88,28 @@ const Register = () => {
       const regex = /^[A-Za-z\s]{2,50}$/;
       return regex.test(name);
     };
-  
+
     if (validateName(firstName)) {
-      setFirstNameError('');
+      setFirstNameError("");
     } else {
-      setFirstNameError('First Name must be 2-50 characters long and contain only letters and spaces.');
+      setFirstNameError(
+        "First Name must be 2-50 characters long and contain only letters and spaces."
+      );
       return false;
     }
-  
+
     if (validateName(lastName)) {
-      setLastNameError('');
+      setLastNameError("");
     } else {
-      setLastNameError('Last Name must be 2-50 characters long and contain only letters and spaces.');
+      setLastNameError(
+        "Last Name must be 2-50 characters long and contain only letters and spaces."
+      );
       return false;
     }
 
-   //validation for email id
+    //validation for email id
 
-    if(!email){
+    if (!email) {
       setEmailError("Email is required!");
       return false;
     }
@@ -122,17 +118,17 @@ const Register = () => {
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return regex.test(email);
     };
-  
-    if(validateEmail(email)){
+
+    if (validateEmail(email)) {
       setEmailError("");
-    }else{
+    } else {
       setEmailError("Invalid email address");
       return false;
     }
 
     //Phone number
 
-    if(!phoneNumber){
+    if (!phoneNumber) {
       setPhoneNumberError("Phone Number is required!");
       return false;
     }
@@ -141,21 +137,21 @@ const Register = () => {
       const regex = /^(\+1)?\d{10}$/;
       return regex.test(phone);
     };
-  
-    if(validatePhone(phoneNumber)){
+
+    if (validatePhone(phoneNumber)) {
       setPhoneNumberError("");
-    }else{
-      setPhoneNumberError("Invalid phone number ! Requried Format: 123 123 1234 / +1 123 123 1234 ");
+    } else {
+      setPhoneNumberError(
+        "Invalid phone number ! Requried Format: 123 123 1234 / +1 123 123 1234 "
+      );
       return false;
     }
 
     //Username
 
-
-
     //Password
 
-    if(!password){
+    if (!password) {
       setPasswordError("Password is required!");
       return false;
     }
@@ -164,57 +160,57 @@ const Register = () => {
       const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
       return regex.test(password);
     };
-  
+
     if (validatePassword(password)) {
-      setPasswordError('');
+      setPasswordError("");
     } else {
-      setPasswordError('Password must be at least 8 characters long, contain at least one number, one uppercase letter, one lowercase letter, and one special character.');
+      setPasswordError(
+        "Password must be at least 8 characters long, contain at least one number, one uppercase letter, one lowercase letter, and one special character."
+      );
       return false;
     }
 
-    if(!rePassword){
+    if (!rePassword) {
       setRePasswordError("Confirm Password is required!");
       return false;
     }
 
     //password matching
-  
-    if(password === rePassword){
+
+    if (password === rePassword) {
       setRePasswordError("");
-    }else{
+    } else {
       setRePasswordError("Password do not match !");
       return false;
     }
 
     //Address
 
-    if(!address){
+    if (!address) {
       setAddressError("Address is required!");
-      return false ;
+      return false;
     }
 
     //Insurance number
 
-    if(!insuranceNumber){
+    if (!insuranceNumber) {
       setInsuranceNumberError("Health Insurance Number is required!");
       return false;
     }
-  
-    const validateHealthCardNumber= (no)=>{
+
+    const validateHealthCardNumber = (no) => {
       const regex = /^[0-9]{4}-[0-9]{3}-[0-9]{3}[A-Z]?$/;
       return regex.test(no);
-    }
-    if (validateHealthCardNumber(insuranceNumber)){
+    };
+    if (validateHealthCardNumber(insuranceNumber)) {
       setInsuranceNumberError("");
-    }else{
+    } else {
       setInsuranceNumberError("Requried Format: 1234-123-123A");
       return false;
-    
     }
-    
+
     return true;
-  
-  }
+  };
 
   return (
     <div>
@@ -235,7 +231,6 @@ const Register = () => {
             onChange={(e) => {
               setFirstName(e.target.value);
               setFirstNameError("");
-
             }}
           />
           <span className="errorStyle">{firstNameError}</span>
@@ -261,7 +256,7 @@ const Register = () => {
             }}
           />
           <span className="errorStyle">{emailError}</span>
-          
+
           <input
             type="text"
             placeholder="Phone Number"
@@ -279,7 +274,7 @@ const Register = () => {
             placeholder="Username"
             className="inputStyle"
             value={username}
-            onChange={(e) =>{ 
+            onChange={(e) => {
               setUsername(e.target.value);
               setUsernameError("");
             }}
@@ -291,7 +286,7 @@ const Register = () => {
             placeholder="Password"
             className="inputStyle"
             value={password}
-            onChange={(e) =>{ 
+            onChange={(e) => {
               setPassword(e.target.value);
               setPasswordError("");
             }}
@@ -321,7 +316,7 @@ const Register = () => {
             }}
           />
           <span className="errorStyle">{addressError}</span>
-          
+
           <input
             type="text"
             placeholder="Health Insurance Number"
@@ -331,7 +326,6 @@ const Register = () => {
               setInsuranceNumber(e.target.value);
               setInsuranceNumberError("");
             }}
-            
           />
           <span className="errorStyle">{insuranceNumberError}</span>
 

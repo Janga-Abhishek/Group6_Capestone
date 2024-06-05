@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client";
-import { LOGIN_USER } from "../../graphql/mutations";
+import { LOGIN_USER } from "../../graphql/middleware";
 import Menu from "../../components/Menu";
 import "../../Stylesheet/UserStyles.css";
 import "../../Stylesheet/Login_Register.css";
