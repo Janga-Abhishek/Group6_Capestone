@@ -21,12 +21,14 @@ const UserSchema = new mongoose.Schema({
   password: String,
   insuranceNumber: String,
   userType: String,
+  registeredDate: { type: Date, default: Date.now }
 });
 
 const User = mongoose.model("User", UserSchema);
 
 // Define GraphQL schema
 const typeDefs = gql`
+scalar Date
   type User {
     id: ID!
     firstname: String!
@@ -38,6 +40,7 @@ const typeDefs = gql`
     username: String!
     password: String!
     userType: String!
+    registeredDate:Date!
   }
 
   type Query {
