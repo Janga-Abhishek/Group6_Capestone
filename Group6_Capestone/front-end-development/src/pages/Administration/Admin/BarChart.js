@@ -9,7 +9,7 @@ export const GET_USERS = gql`
   query GetUsers {
     users {
       id
-      date
+      registeredDate
     }
   }
 `;
@@ -26,7 +26,7 @@ const BarChart = () => {
             const months = Array(12).fill(0);
 
             users.forEach(user => {
-                const joinedMonth = new Date(user.date).getMonth();
+                const joinedMonth = new Date(user.registeredDate).getMonth();
                 months[joinedMonth]++;
             });
 

@@ -8,10 +8,10 @@ export default function AdminDashboard() {
       <AdminMenu className="admin-menu" />
       <h1 className="text-center">This is admin Dashboard</h1>
       <div className="p-2 border border-primary">
-        <div className="barChartContainer w-100  mx-auto border border-danger ">
+        <div style={{width:"80%"}} className="barChartContainer mx-auto border border-danger ">
           <BarChart className="barchart" />
         </div>
-        <div className="analytics-container d-flex flex-wrap justify-content-evenly text-center">
+        <div style={{marginTop:"3rem", marginBottom:"3rem"}} className="analytics-container d-flex flex-wrap justify-content-evenly text-center">
           <Card bg="success text-white" style={{ width: "18rem" }}>
             <Card.Header>Total Patients</Card.Header>
             <Card.Body>
