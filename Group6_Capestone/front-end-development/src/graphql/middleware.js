@@ -37,3 +37,21 @@ export const REGISTER_USER = gql`
     }
   }
 `;
+
+/*QUERIES */
+
+export const GET_USERS=gql `
+query GetUsers{
+  users{
+      id 
+      firstname
+      lastname
+      email
+      phonenumber
+      address
+      insuranceNumber
+      username
+      userType 
+  }
+}
+`;
