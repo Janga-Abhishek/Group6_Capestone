@@ -2,8 +2,8 @@ import React, { useState } from "react";
 //import { useNavigate } from "react-router-dom";
 import Menu from "../../components/Menu";
 import "../../Stylesheet/Login_Register.css";
-import { useMutation } from "@apollo/client";
-import { REGISTER_USER } from "../../graphql/middleware";
+import { useMutation,useLazyQuery } from "@apollo/client";
+import { REGISTER_USER,CHECK_USERNAME} from "../../graphql/middleware";
 
 const buttonStyle = {
   width: "100%",
@@ -43,13 +43,15 @@ const Register = () => {
   const [rePasswordError, setRePasswordError] = useState("");
   const [registrationUpdate, setRegistrationUpdate] = useState("");
   const [registerUser] = useMutation(REGISTER_USER);
+  const [checkUsername] = useLazyQuery(CHECK_USERNAME);
 
   const handleRegistration = async (e) => {
     e.preventDefault();
 
-    if (!validateForm()) {
+    if (!( await validateForm())) {
       return;
     }
+
 
     try {
       const { data } = await registerUser({
@@ -73,7 +75,7 @@ const Register = () => {
     }
   };
 
-  const validateForm = () => {
+  const validateForm = async() => {
     // validation for name
     if (!firstName) {
       setFirstNameError("First Name is required!");
@@ -148,6 +150,22 @@ const Register = () => {
     }
 
     //Username
+
+    if (!username) {
+      setUsernameError("Username is required!");
+      return false;
+    }
+
+    const { data } = await checkUsername({ variables: { username } });
+    console.log(data);
+    if (data.checkUsername) {
+      setUsernameError("Username is already taken!");
+      return false;
+    } else {
+      setUsernameError("");
+    }
+
+
 
     //Password
 

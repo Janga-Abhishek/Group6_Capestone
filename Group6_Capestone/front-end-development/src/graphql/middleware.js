@@ -38,6 +38,13 @@ export const REGISTER_USER = gql`
   }
 `;
 
+export const CHECK_USERNAME = gql`
+  query CheckUsername($username: String!) {
+    checkUsername(username: $username)
+  }
+`;
+
+
 /*QUERIES */
 
 export const GET_USERS=gql `

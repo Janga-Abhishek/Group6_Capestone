@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 // Connect to MongoDB
 mongoose
   .connect(
-    "mongodb+srv://jangaabhishek:abhishekjanga@cluster0.iivycnm.mongodb.net/Group6_Capestone?retryWrites=true&w=majority",
+    "mongodb+srv://revathysasi01:123Mongodb@cluster0.fxezvmm.mongodb.net/Group6_Capestone?retryWrites=true&w=majority",
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => console.log("MongoDB connection successful"))
@@ -46,6 +46,7 @@ scalar Date
   type Query {
     user(id: ID!): User
     users: [User]
+    checkUsername(username:String!):Boolean
   }
 
   type Mutation {
@@ -83,7 +84,16 @@ const resolvers = {
         throw new Error("Error fetching users");
       }
     },
+    checkUsername: async (_, { username }) => { 
+      try{
+      const user = await User.findOne({ username });
+      return !!user; 
+    }catch (error) {
+      throw new Error("Error fetching users");
+    }
+    },
   },
+
   Mutation: {
     RegisterUser: async (
       _,
