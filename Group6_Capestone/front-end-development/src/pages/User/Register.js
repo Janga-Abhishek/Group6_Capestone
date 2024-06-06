@@ -70,6 +70,8 @@ const Register = () => {
 
       console.log("User registered successfully:", data);
       setRegistrationUpdate("Registration is Successful");
+      window.location.href = "/Login";
+      
     } catch (error) {
       console.error("Error Registering User:", error);
     }
