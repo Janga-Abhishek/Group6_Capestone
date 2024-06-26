@@ -44,6 +44,12 @@ export const CHECK_USERNAME = gql`
   }
 `;
 
+export const CHECK_EMAIL = gql`
+  query checkEmail($email: String!) {
+    checkEmail(email: $email)
+  }
+`;
+
 
 /*QUERIES */
 

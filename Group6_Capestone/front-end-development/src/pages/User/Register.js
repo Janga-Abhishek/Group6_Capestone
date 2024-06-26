@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-//import { useNavigate } from "react-router-dom";
 import Menu from "../../components/Menu";
 import "../../Stylesheet/Login_Register.css";
 import { useMutation,useLazyQuery } from "@apollo/client";
-import { REGISTER_USER,CHECK_USERNAME} from "../../graphql/middleware";
+import { REGISTER_USER,CHECK_USERNAME,CHECK_EMAIL} from "../../graphql/middleware";
+import emailjs from "@emailjs/browser";
 
 const buttonStyle = {
   width: "100%",
@@ -21,6 +21,7 @@ const buttonHoverStyle = {
 };
 
 const Register = () => {
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -44,6 +45,26 @@ const Register = () => {
   const [registrationUpdate, setRegistrationUpdate] = useState("");
   const [registerUser] = useMutation(REGISTER_USER);
   const [checkUsername] = useLazyQuery(CHECK_USERNAME);
+  const [checkEmail] = useLazyQuery(CHECK_EMAIL);
+
+  const sendEmail = (firstName, email) => {
+    const templateParams = {
+      to_name: firstName,
+      to_email: email,
+      from_name: "HealthEase",
+      from_email: "healthease324@gmail.com",
+      subject: "Registration successful for HealthEase",
+      message: "You have registered successfully"
+    };
+
+    emailjs.send('service_op5arxo', 'template_8sx8s2a', templateParams, 'XhXkvNj6XjZCkddgl')
+      .then((result) => {
+          console.log("Email sent successfully", result.text);
+          setRegistrationUpdate("Registration is successful. Please check your email.");
+      }, (error) => {
+          console.log("Error sending email:", error.text);
+      });
+  }
 
   const handleRegistration = async (e) => {
     e.preventDefault();
@@ -68,7 +89,10 @@ const Register = () => {
         },
       });
 
+      
+      sendEmail(firstName,email);
       console.log("User registered successfully:", data);
+
       setRegistrationUpdate("Registration is Successful");
       window.location.href = "/Login";
       
@@ -130,6 +154,13 @@ const Register = () => {
       return false;
     }
 
+    if ((await checkEmail({ variables: { email } }))?.data?.checkEmail) {
+      setEmailError("Email is already taken!");
+      return false;
+    } else {
+      setEmailError("");
+    }
+
     //Phone number
 
     if (!phoneNumber) {
@@ -150,6 +181,8 @@ const Register = () => {
       );
       return false;
     }
+
+    
 
     //Username
 
@@ -242,7 +275,7 @@ const Register = () => {
             alt="Logo"
             className="logoStyle"
           />
-          <h2>USER REGISTRATION</h2>
+          <h3>USER REGISTRATION</h3>
           <input
             type="text"
             placeholder="First Name"

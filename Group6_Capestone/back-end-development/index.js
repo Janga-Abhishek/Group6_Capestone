@@ -47,6 +47,7 @@ scalar Date
     user(id: ID!): User
     users: [User]
     checkUsername(username:String!):Boolean
+    checkEmail(email:String!):Boolean
   }
 
   type Mutation {
@@ -87,6 +88,14 @@ const resolvers = {
     checkUsername: async (_, { username }) => { 
       try{
       const user = await User.findOne({ username });
+      return !!user; 
+    }catch (error) {
+      throw new Error("Error fetching users");
+    }
+    },
+    checkEmail: async (_, { email }) => { 
+      try{
+      const user = await User.findOne({ email });
       return !!user; 
     }catch (error) {
       throw new Error("Error fetching users");
