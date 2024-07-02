@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Menu from "../../components/Menu";
 import { useMutation } from "@apollo/client";
+import emailjs from "emailjs-com";
 import { LOGIN_USER } from "../../graphql/middleware";
 import "../../Stylesheet/Login_Register.css";
 
@@ -36,7 +37,59 @@ const AdministrationLogin = () => {
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [loginError, setLoginError] = useState("");
+  const [emailSent, setEmailSent] = useState(false);
   const [loginUser] = useMutation(LOGIN_USER);
+
+  useEffect(() => {
+    if (emailSent) {
+      if (userType === "admin") {
+        window.location.href = "/adminDashboard";
+      } else if (userType === "doctor") {
+        window.location.href = "/doctorDashboard";
+      }
+    }
+  }, [emailSent, userType]);
+
+  const getSystemInfo = () => {
+    const userAgent = navigator.userAgent;
+    const platform = navigator.platform;
+    const appName = navigator.appName;
+    const appVersion = navigator.appVersion;
+
+    return { userAgent, platform, appName, appVersion };
+  };
+
+  const sendEmailNotification = (username, email, systemInfo) => {
+    const message = `
+      There has been a login activity detected for your account. \n\n
+      System Info: \n
+      User Agent: ${systemInfo.userAgent} \n
+      Platform: ${systemInfo.platform} \n
+      App Name: ${systemInfo.appName} \n
+      App Version: ${systemInfo.appVersion} \n\n
+    `;
+
+    return emailjs
+      .send(
+        "gmail",
+        "EmailNotification",
+        {
+          username,
+          email,
+          subject: "Login Activity Detected",
+          message,
+        },
+        "RyutgiHxQkDT9ECdW"
+      )
+      .then((response) => {
+        console.log("Email successfully sent!", response.status, response.text);
+        setEmailSent(true);
+      })
+      .catch((err) => {
+        console.error("Failed to send email. Error: ", err);
+        setLoginError("Failed to send email notification");
+      });
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -65,11 +118,8 @@ const AdministrationLogin = () => {
           return;
         }
 
-        if (userType === "admin") {
-          window.location.href = "/adminDashboard";
-        } else if (userType === "doctor") {
-          window.location.href = "/doctorDashboard";
-        }
+        const systemInfo = getSystemInfo();
+        sendEmailNotification(username, user.email, systemInfo);
       } else {
         setLoginError("Invalid credentials");
       }
