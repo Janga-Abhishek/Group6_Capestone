@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import Menu from "../../components/Menu";
 import "../../Stylesheet/Login_Register.css";
-import { useMutation,useLazyQuery } from "@apollo/client";
-import { REGISTER_USER,CHECK_USERNAME,CHECK_EMAIL} from "../../graphql/middleware";
+import { useMutation, useLazyQuery } from "@apollo/client";
+import {
+  REGISTER_USER,
+  CHECK_USERNAME,
+  CHECK_EMAIL,
+} from "../../graphql/middleware";
 import emailjs from "@emailjs/browser";
 
 const buttonStyle = {
@@ -21,7 +25,6 @@ const buttonHoverStyle = {
 };
 
 const Register = () => {
-
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -47,32 +50,36 @@ const Register = () => {
   const [checkUsername] = useLazyQuery(CHECK_USERNAME);
   const [checkEmail] = useLazyQuery(CHECK_EMAIL);
 
-  const sendEmail = (firstName, email) => {
+  const sendEmail = (username, email) => {
     const templateParams = {
-      to_name: firstName,
-      to_email: email,
-      from_name: "HealthEase",
-      from_email: "healthease324@gmail.com",
+      username: username,
+      email: email,
       subject: "Registration successful for HealthEase",
-      message: "You have registered successfully"
+      message: "You have registered successfully",
     };
 
-    emailjs.send('service_op5arxo', 'template_8sx8s2a', templateParams, 'XhXkvNj6XjZCkddgl')
-      .then((result) => {
+    emailjs
+      .send("gmail", "EmailNotification", templateParams, "RyutgiHxQkDT9ECdW")
+      .then(
+        (result) => {
           console.log("Email sent successfully", result.text);
-          setRegistrationUpdate("Registration is successful. Please check your email.");
-      }, (error) => {
+          setRegistrationUpdate(
+            "Registration is successful. Please check your email."
+          );
+          window.location.href = "/Login";
+        },
+        (error) => {
           console.log("Error sending email:", error.text);
-      });
-  }
+        }
+      );
+  };
 
   const handleRegistration = async (e) => {
     e.preventDefault();
 
-    if (!( await validateForm())) {
+    if (!(await validateForm())) {
       return;
     }
-
 
     try {
       const { data } = await registerUser({
@@ -89,19 +96,16 @@ const Register = () => {
         },
       });
 
-      
-      sendEmail(firstName,email);
+      sendEmail(username, email);
       console.log("User registered successfully:", data);
 
       setRegistrationUpdate("Registration is Successful");
-      window.location.href = "/Login";
-      
     } catch (error) {
       console.error("Error Registering User:", error);
     }
   };
 
-  const validateForm = async() => {
+  const validateForm = async () => {
     // validation for name
     if (!firstName) {
       setFirstNameError("First Name is required!");
@@ -182,8 +186,6 @@ const Register = () => {
       return false;
     }
 
-    
-
     //Username
 
     if (!username) {
@@ -199,8 +201,6 @@ const Register = () => {
     } else {
       setUsernameError("");
     }
-
-
 
     //Password
 

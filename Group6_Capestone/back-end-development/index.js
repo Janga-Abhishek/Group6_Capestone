@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 // Connect to MongoDB
 mongoose
   .connect(
-    "mongodb+srv://revathysasi01:123Mongodb@cluster0.fxezvmm.mongodb.net/Group6_Capestone?retryWrites=true&w=majority",
+    "mongodb+srv://jangaabhishek:abhishekjanga@cluster0.iivycnm.mongodb.net/Group6_Capestone?retryWrites=true&w=majority",
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => console.log("MongoDB connection successful"))
@@ -21,14 +21,14 @@ const UserSchema = new mongoose.Schema({
   password: String,
   insuranceNumber: String,
   userType: String,
-  registeredDate: { type: Date, default: Date.now }
+  registeredDate: { type: Date, default: Date.now },
 });
 
 const User = mongoose.model("User", UserSchema);
 
 // Define GraphQL schema
 const typeDefs = gql`
-scalar Date
+  scalar Date
   type User {
     id: ID!
     firstname: String!
@@ -40,14 +40,14 @@ scalar Date
     username: String!
     password: String!
     userType: String!
-    registeredDate:Date!
+    registeredDate: Date!
   }
 
   type Query {
     user(id: ID!): User
     users: [User]
-    checkUsername(username:String!):Boolean
-    checkEmail(email:String!):Boolean
+    checkUsername(username: String!): Boolean
+    checkEmail(email: String!): Boolean
   }
 
   type Mutation {
@@ -85,21 +85,21 @@ const resolvers = {
         throw new Error("Error fetching users");
       }
     },
-    checkUsername: async (_, { username }) => { 
-      try{
-      const user = await User.findOne({ username });
-      return !!user; 
-    }catch (error) {
-      throw new Error("Error fetching users");
-    }
+    checkUsername: async (_, { username }) => {
+      try {
+        const user = await User.findOne({ username });
+        return !!user;
+      } catch (error) {
+        throw new Error("Error fetching users");
+      }
     },
-    checkEmail: async (_, { email }) => { 
-      try{
-      const user = await User.findOne({ email });
-      return !!user; 
-    }catch (error) {
-      throw new Error("Error fetching users");
-    }
+    checkEmail: async (_, { email }) => {
+      try {
+        const user = await User.findOne({ email });
+        return !!user;
+      } catch (error) {
+        throw new Error("Error fetching users");
+      }
     },
   },
 
