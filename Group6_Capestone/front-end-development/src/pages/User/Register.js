@@ -7,7 +7,7 @@ import {
   CHECK_USERNAME,
   CHECK_EMAIL,
 } from "../../graphql/middleware";
-import emailjs from "@emailjs/browser";
+import emailjs from "emailjs-com";
 
 const buttonStyle = {
   width: "100%",

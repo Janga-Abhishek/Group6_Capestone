@@ -10,6 +10,14 @@ mongoose
   .then(() => console.log("MongoDB connection successful"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
+const AppointmentSchema = new mongoose.Schema({
+  patientName: String,
+  time: String,
+  issue: String,
+  previousRecords: String,
+});
+const Appointment = mongoose.model("Appointment", AppointmentSchema);
+
 // Define User schema
 const UserSchema = new mongoose.Schema({
   firstname: String,
@@ -29,6 +37,14 @@ const User = mongoose.model("User", UserSchema);
 // Define GraphQL schema
 const typeDefs = gql`
   scalar Date
+  type Appointment {
+    id: ID!
+    patientName: String!
+    time: String!
+    issue: String
+    previousRecords: String
+  }
+
   type User {
     id: ID!
     firstname: String!
@@ -48,6 +64,8 @@ const typeDefs = gql`
     users: [User]
     checkUsername(username: String!): Boolean
     checkEmail(email: String!): Boolean
+    appointment(id: ID!): Appointment
+    appointments: [Appointment]
   }
 
   type Mutation {
@@ -83,6 +101,20 @@ const resolvers = {
         return users;
       } catch (error) {
         throw new Error("Error fetching users");
+      }
+    },
+    appointment: async (_, { id }) => {
+      try {
+        return await Appointment.findById(id);
+      } catch (error) {
+        throw new Error("Appointment not found");
+      }
+    },
+    appointments: async () => {
+      try {
+        return await Appointment.find();
+      } catch (error) {
+        throw new Error("Error fetching appointments");
       }
     },
     checkUsername: async (_, { username }) => {
