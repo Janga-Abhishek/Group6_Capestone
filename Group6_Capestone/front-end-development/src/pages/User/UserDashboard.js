@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Menu from "../../components/Menu";
 import Banner from "../../components/Banner";
 import Footer from "../../components/Footer";
@@ -49,13 +49,16 @@ const navTextStyle = {
 
 const UserDashboard = () => {
   const [username, setUsername] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUsername = sessionStorage.getItem("username");
     if (storedUsername) {
       setUsername(storedUsername);
+    } else {
+      navigate("/");
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <div>
@@ -82,7 +85,7 @@ const UserDashboard = () => {
           <Link to="/uploadPrescription" style={navButtonStyle}>
             <img
               src="/images/HealthEase_logo.png"
-              alt="upload prescription"
+              alt="Upload Prescription"
               style={navImageStyle}
             />
             <span style={navTextStyle}>Upload Prescription</span>

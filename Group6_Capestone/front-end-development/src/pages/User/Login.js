@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import emailjs from "emailjs-com";
@@ -33,6 +33,13 @@ const Login = () => {
   const [loginError, setLoginError] = useState("");
   const [emailSent, setEmailSent] = useState(false);
 
+  useEffect(() => {
+    const storedUsername = sessionStorage.getItem("username");
+    if (storedUsername) {
+      window.location.href = "/userDashboard"; // Redirect to userDashboard if username exists in sessionStorage
+    }
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoginError("");
@@ -57,11 +64,12 @@ const Login = () => {
       console.log("Login response:", data);
 
       if (data && data.loginUser) {
-        const { email } = data.loginUser;
+        const { email, userType } = data.loginUser; // Extract userType from data
         console.log("User data:", data.loginUser);
 
-        // Store the username in the session storage
+        // Store username and userType in session storage
         sessionStorage.setItem("username", username);
+        sessionStorage.setItem("userType", userType);
 
         // Get system info
         const systemInfo = getSystemInfo();
@@ -69,7 +77,7 @@ const Login = () => {
         // Send email notification
         sendEmailNotification(username, email, systemInfo)
           .then(() => {
-            setEmailSent(true);
+            setEmailSent(true); // Set emailSent to true upon successful send
           })
           .catch((error) => {
             console.error("Failed to send email:", error);
@@ -143,7 +151,7 @@ const Login = () => {
   };
 
   if (emailSent) {
-    window.location.href = "/userDashboard";
+    window.location.href = "/userDashboard"; // Redirect to userDashboard if email was successfully sent
   }
 
   return (

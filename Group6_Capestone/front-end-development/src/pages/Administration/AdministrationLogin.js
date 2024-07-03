@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Menu from "../../components/Menu";
 import { useMutation } from "@apollo/client";
 import emailjs from "emailjs-com";
 import { LOGIN_USER } from "../../graphql/middleware";
+import Menu from "../../components/Menu";
 import "../../Stylesheet/Login_Register.css";
 
 const buttonStyle = {
@@ -41,14 +41,16 @@ const AdministrationLogin = () => {
   const [loginUser] = useMutation(LOGIN_USER);
 
   useEffect(() => {
-    if (emailSent) {
-      if (userType === "admin") {
+    const storedUsername = sessionStorage.getItem("username");
+    const storedUserType = sessionStorage.getItem("userType");
+    if (storedUsername && storedUserType) {
+      if (storedUserType === "admin") {
         window.location.href = "/adminDashboard";
-      } else if (userType === "doctor") {
+      } else if (storedUserType === "doctor") {
         window.location.href = "/doctorDashboard";
       }
     }
-  }, [emailSent, userType]);
+  }, []);
 
   const getSystemInfo = () => {
     const userAgent = navigator.userAgent;
@@ -113,10 +115,14 @@ const AdministrationLogin = () => {
 
       if (data && data.loginUser) {
         const user = data.loginUser;
+
         if (user.userType !== userType) {
           setLoginError("User type doesn't match");
           return;
         }
+
+        sessionStorage.setItem("username", username);
+        sessionStorage.setItem("userType", user.userType);
 
         const systemInfo = getSystemInfo();
         sendEmailNotification(username, user.email, systemInfo);
@@ -128,6 +134,14 @@ const AdministrationLogin = () => {
       setLoginError("Invalid credentials");
     }
   };
+
+  if (emailSent) {
+    if (userType === "admin") {
+      window.location.href = "/adminDashboard";
+    } else if (userType === "doctor") {
+      window.location.href = "/doctorDashboard";
+    }
+  }
 
   return (
     <div>
