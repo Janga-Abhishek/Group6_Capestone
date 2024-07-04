@@ -74,7 +74,7 @@ const UserDashboard = () => {
       <Banner />
       <div style={containerStyle}>
         <div style={navContainerStyle}>
-          <Link to="/appointments" style={navButtonStyle}>
+          <Link to="/bookAppointments" style={navButtonStyle}>
             <img
               src="/images/appointment.png"
               alt="Appointments"

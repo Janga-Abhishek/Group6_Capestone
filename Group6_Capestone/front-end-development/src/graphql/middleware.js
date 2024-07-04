@@ -38,6 +38,22 @@ export const REGISTER_USER = gql`
   }
 `;
 
+export const BOOK_APPOINTMENT = gql`
+  mutation BookAppointment(
+    $username:String!
+    $appointmentdate:String!,
+    $appointmenttime:String!,
+    $issuedescription: String!) {  
+    BookAppointment(username:$username,appointmentdate: $appointmentdate,appointmenttime: $appointmenttime,issuedescription: $issuedescription) {
+      id
+      username
+      appointmentdate
+      appointmenttime
+      issuedescription
+    }
+  }
+`;
+
 export const CHECK_USERNAME = gql`
   query CheckUsername($username: String!) {
     checkUsername(username: $username)

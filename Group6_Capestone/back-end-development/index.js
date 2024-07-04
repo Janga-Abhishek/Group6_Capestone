@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 // Connect to MongoDB
 mongoose
   .connect(
-    "mongodb+srv://jangaabhishek:abhishekjanga@cluster0.iivycnm.mongodb.net/Group6_Capestone?retryWrites=true&w=majority",
+    "mongodb+srv://revathysasi01:123Mongodb@cluster0.fxezvmm.mongodb.net/Group6_Capestone?retryWrites=true&w=majority",
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => console.log("MongoDB connection successful"))
@@ -30,9 +30,19 @@ const UserSchema = new mongoose.Schema({
   insuranceNumber: String,
   userType: String,
   registeredDate: { type: Date, default: Date.now },
+
 });
 
 const User = mongoose.model("User", UserSchema);
+
+const UserAppointmentSchema = new mongoose.Schema({
+  username: { type: String, ref: 'User' },
+  appointmentdate: String,
+  appointmenttime: String,
+  issuedescription: String,
+});
+
+const BookedAppointments = mongoose.model("BookedAppointments", UserAppointmentSchema);
 
 // Define GraphQL schema
 const typeDefs = gql`
@@ -59,6 +69,14 @@ const typeDefs = gql`
     registeredDate: Date!
   }
 
+  type BookedAppointments{
+    id:ID!
+    username:String!
+    appointmentdate:String!
+    appointmenttime: String!
+    issuedescription: String!
+  }
+
   type Query {
     user(id: ID!): User
     users: [User]
@@ -81,6 +99,7 @@ const typeDefs = gql`
       userType: String!
     ): User
     loginUser(username: String!, password: String!): User
+    BookAppointment(username:String!,appointmentdate:String!,appointmenttime: String!,issuedescription: String!):BookedAppointments
   }
 `;
 
@@ -180,6 +199,30 @@ const resolvers = {
         throw new Error("Invalid credentials");
       }
     },
+    BookAppointment: async (
+      _,
+      {
+        username,
+        appointmentdate,
+        appointmenttime,
+        issuedescription,
+      }
+    ) => {
+      try {
+        const appointment = new BookedAppointments({
+        username,
+        appointmentdate,
+        appointmenttime,
+        issuedescription,
+        });
+        await appointment.save();
+        return appointment;
+      } catch (error) {
+        console.error("Error saving appointment:", error.message);
+        throw new Error("Error saving appointment");
+      }
+    },
+
   },
 };
 
