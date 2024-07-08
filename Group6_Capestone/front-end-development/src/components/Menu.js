@@ -101,7 +101,7 @@ const Menu = () => {
                 <>
                   <li className="liStyle">
                     <Link
-                      to="/bookAppointments"
+                      to="/appointments"
                       style={
                         hoverIndex === 0
                           ? { ...linkStyle, ...linkHoverStyle }
@@ -147,7 +147,7 @@ const Menu = () => {
                 <>
                   <li className="liStyle">
                     <Link
-                      to="/doctors"
+                      to="/doctorsList"
                       style={
                         hoverIndex === 3
                           ? { ...linkStyle, ...linkHoverStyle }
@@ -161,7 +161,7 @@ const Menu = () => {
                   </li>
                   <li className="liStyle">
                     <Link
-                      to="/patients"
+                      to="/patientsList"
                       style={
                         hoverIndex === 4
                           ? { ...linkStyle, ...linkHoverStyle }

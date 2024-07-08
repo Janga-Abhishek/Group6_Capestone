@@ -16,7 +16,7 @@ const AdminDashboard = () => {
 
   return (
     <div>
-      <AdminMenu />
+      <Menu />
       <h1 className="text-center">This is admin Dashboard</h1>
       <div className="p-2 border border-primary">
         <div className="barChartContainer w-100 mx-auto border border-danger">
