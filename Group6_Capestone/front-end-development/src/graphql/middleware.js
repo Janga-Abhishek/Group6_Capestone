@@ -38,6 +38,35 @@ export const REGISTER_USER = gql`
   }
 `;
 
+//MIDDLEWARE REGISTER DOCTOR
+
+export const REGISTER_DOCTOR = gql`
+  mutation RegisterDoctor(
+    $firstname:String!,
+    $lastname:String!,
+    $email: String!,
+    $phonenumber:String!,
+    $insuranceNumber:String!,
+    $address:String!,
+    $username: String!,
+    $password: String!,
+    $userType: String!) {  
+    RegisterDoctor(firstname: $firstname,lastname: $lastname,email: $email,phonenumber: $phonenumber,
+      insuranceNumber:$insuranceNumber,address: $address,username: $username, password: $password,userType: $userType) {
+      id 
+      firstname
+      lastname
+      email
+      phonenumber
+      insuranceNumber
+      address
+      username
+      password
+      userType
+    }
+  }
+`;
+
 export const BOOK_APPOINTMENT = gql`
   mutation BookAppointment(
     $username:String!
@@ -82,5 +111,20 @@ query GetUsers{
       username
       userType 
   }
+}
+`;
+
+export const GET_DOCTORS=gql`
+query GetDoctors{
+  doctors{
+    id
+    firstname
+    lastname
+    email
+    phonenumber
+    address
+    username
+    userType 
+}
 }
 `;

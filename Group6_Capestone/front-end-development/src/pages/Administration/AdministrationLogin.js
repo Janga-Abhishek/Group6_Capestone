@@ -145,7 +145,7 @@ const AdministrationLogin = () => {
 
   return (
     <div>
-      <Menu />
+      {/* <Menu /> */}
       <div className="AdministrationContainerStyle">
         <form className="formStyle" onSubmit={handleLogin}>
           <img

@@ -15,14 +15,14 @@ export default function AdminMenu() {
             </Nav.Link>
         <Navbar.Collapse id="basic-navbar-nav justify-centent-end">
           <Nav className="mx-auto p-2 justify-content-between">
-            <Nav.Link className="text-white" href="#doctors">
-              Doctors
+            <Nav.Link className="text-white" href="/doctorsList">
+              DoctorsList
             </Nav.Link>
-            <Nav.Link className="text-white" href="#patients">
-              Patients
+            <Nav.Link className="text-white" href="/patientsList">
+              PatientsList
             </Nav.Link>
             <Nav.Link className="text-white" href="#appointments">
-              Appointments
+              EmployeeList
             </Nav.Link>
             <Nav.Link className="text-white" href="#link">
               Store

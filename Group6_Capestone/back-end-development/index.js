@@ -84,6 +84,7 @@ const typeDefs = gql`
     checkEmail(email: String!): Boolean
     appointment(id: ID!): Appointment
     appointments: [Appointment]
+    doctors:[User]
   }
 
   type Mutation {
@@ -100,6 +101,19 @@ const typeDefs = gql`
     ): User
     loginUser(username: String!, password: String!): User
     BookAppointment(username:String!,appointmentdate:String!,appointmenttime: String!,issuedescription: String!):BookedAppointments
+
+    #MUTATION TO REGISTER DOCTOR
+    RegisterDoctor(
+      firstname: String!
+      lastname: String!
+      email: String!
+      phonenumber: String!
+      insuranceNumber:String!
+      address: String!
+      username: String!
+      password: String!
+      userType: String!
+    ): User
   }
 `;
 
@@ -120,6 +134,16 @@ const resolvers = {
         return users;
       } catch (error) {
         throw new Error("Error fetching users");
+      }
+    },
+    /*QUERY TO RETRIVE DOCTORS BASED ON USERTYPE */
+    doctors: async () => {
+      try{
+        const doctors=await User.find({userType:"doctor"});
+        return doctors;
+      }
+      catch(error){
+        throw new Error("Error fetching list of all doctors details");
       }
     },
     appointment: async (_, { id }) => {
@@ -185,6 +209,39 @@ const resolvers = {
         return user;
       } catch (error) {
         throw new Error("Error registering user");
+      }
+    },
+    //MUTATION TO REGISTER DOCTOR
+    RegisterDoctor: async (
+      _,
+      {
+        firstname,
+        lastname,
+        email,
+        phonenumber,
+        insuranceNumber,
+        address,
+        username,
+        password,
+        userType,
+      }
+    ) => {
+      try {
+        const user = new User({
+          firstname,
+          lastname,
+          email,
+          phonenumber,
+          address,
+          insuranceNumber,
+          username,
+          password,
+          userType,
+        });
+        await user.save();
+        return user;
+      } catch (error) {
+        throw new Error("Error registering doctor");
       }
     },
     loginUser: async (_, { username, password }) => {

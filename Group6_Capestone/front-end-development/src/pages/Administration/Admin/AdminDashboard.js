@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import Menu from "../../../components/Menu";
 import Card from "react-bootstrap/Card";
 import BarChart from "./BarChart";
+import AdminMenu from "../../../components/AdminMenu";
 
 const AdminDashboard = () => {
   useEffect(() => {
@@ -15,7 +16,7 @@ const AdminDashboard = () => {
 
   return (
     <div>
-      <Menu />
+      <AdminMenu />
       <h1 className="text-center">This is admin Dashboard</h1>
       <div className="p-2 border border-primary">
         <div className="barChartContainer w-100 mx-auto border border-danger">
