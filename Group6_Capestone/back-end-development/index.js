@@ -32,8 +32,21 @@ const UserSchema = new mongoose.Schema({
   registeredDate: { type: Date, default: Date.now },
 
 });
-
 const User = mongoose.model("User", UserSchema);
+
+//DEFINE DOCTOR SCHEMA
+const DoctorSchema = new mongoose.Schema({
+  firstname: String,
+  lastname: String,
+  email: String,
+  phonenumber: String,
+  address: String,
+  username: String,
+  password: String,
+  userType: String,
+  registeredDate: { type: Date, default: Date.now },
+});
+const Doctor = mongoose.model("Doctor", DoctorSchema);
 
 const UserAppointmentSchema = new mongoose.Schema({
   username: { type: String, ref: 'User' },
@@ -69,6 +82,20 @@ const typeDefs = gql`
     registeredDate: Date!
   }
 
+ #typedefs of doctor
+ type Doctor {
+    id:ID!
+    firstname: String!,
+    lastname: String!,
+    email: String!,
+    phonenumber: String!,
+    address: String!,
+    username: String!,
+    password: String!,
+    userType: String!,
+    registeredDate: Date!,
+  }
+
   type BookedAppointments{
     id:ID!
     username:String!
@@ -84,7 +111,8 @@ const typeDefs = gql`
     checkEmail(email: String!): Boolean
     appointment(id: ID!): Appointment
     appointments: [Appointment]
-    doctors:[User]
+    doctor(id:ID!):Doctor
+    doctors:[Doctor]
   }
 
   type Mutation {
@@ -108,12 +136,11 @@ const typeDefs = gql`
       lastname: String!
       email: String!
       phonenumber: String!
-      insuranceNumber:String!
       address: String!
       username: String!
       password: String!
       userType: String!
-    ): User
+    ): Doctor
   }
 `;
 
@@ -128,6 +155,18 @@ const resolvers = {
         throw new Error("User not found");
       }
     },
+
+    //QUERY FOR DOCTOR
+    doctor:async(_, {id}) => {
+      try{
+        const doctor=await Doctor.findById(id);
+        return doctor;
+      }
+      catch(error){
+        throw new Error("Doctor not found")
+      }
+    },
+
     users: async () => {
       try {
         const users = await User.find();
@@ -139,7 +178,7 @@ const resolvers = {
     /*QUERY TO RETRIVE DOCTORS BASED ON USERTYPE */
     doctors: async () => {
       try{
-        const doctors=await User.find({userType:"doctor"});
+        const doctors=await Doctor.find({userType:"doctor"});
         return doctors;
       }
       catch(error){
@@ -219,7 +258,6 @@ const resolvers = {
         lastname,
         email,
         phonenumber,
-        insuranceNumber,
         address,
         username,
         password,
@@ -227,19 +265,18 @@ const resolvers = {
       }
     ) => {
       try {
-        const user = new User({
+        const doctor = new Doctor({
           firstname,
           lastname,
           email,
           phonenumber,
           address,
-          insuranceNumber,
           username,
           password,
           userType,
         });
-        await user.save();
-        return user;
+        await doctor.save();
+        return doctor;
       } catch (error) {
         throw new Error("Error registering doctor");
       }

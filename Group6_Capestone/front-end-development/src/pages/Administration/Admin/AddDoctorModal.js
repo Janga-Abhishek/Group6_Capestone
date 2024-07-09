@@ -26,7 +26,6 @@ const AddDoctorModal = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [address, setAddress] = useState("");
-    const [insuranceNumber, setInsuranceNumber] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [rePassword, setRePassword] = useState("");
     const [registerDoctor] = useMutation(REGISTER_DOCTOR);
@@ -42,7 +41,6 @@ const AddDoctorModal = () => {
     const [rePasswordError, setRePasswordError] = useState("");
     const [addressError, setAddressError] = useState("");
     const [phoneNumberError, setPhoneNumberError] = useState("");
-    const [insuranceNumberError, setInsuranceNumberError] = useState("");
     /*--------------ALERT MESSAGES------------------- */
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
@@ -66,7 +64,6 @@ const AddDoctorModal = () => {
                     address: address,
                     username: username,
                     userType: "doctor",
-                    insuranceNumber: insuranceNumber,
                 }
             });
             setAlertMessage("Registration Successful!");
@@ -92,7 +89,6 @@ const AddDoctorModal = () => {
         setAddress("");
         setPhoneNumber("");
         setRePassword("");
-        setInsuranceNumber("");
     }
 
     const validateForm = async () => {
@@ -174,11 +170,6 @@ const AddDoctorModal = () => {
             return false;
         }
 
-        if (!insuranceNumber) {
-            setUsernameError("Insurance Number is required!");
-            return false;
-        }
-
         const { data } = await checkUsername({ variables: { username } });
         console.log(data);
         if (data.checkUsername) {
@@ -236,8 +227,6 @@ const AddDoctorModal = () => {
                 <span className="errorStyle">{rePasswordError}</span>
                 <input type="text" placeholder="Address" className="inputStyle" value={address} onChange={(e) => { setAddress(e.target.value); setAddressError(""); }} />
                 <span className="errorStyle">{addressError}</span>
-                <input type="text" placeholder="insuranceNumber" className="inputStyle" value={insuranceNumber} onChange={(e) => { setInsuranceNumber(e.target.value); setInsuranceNumberError(""); }} />
-                <span className="errorStyle">{insuranceNumberError}</span>
                 <Button type="submit" variant='success'>Register</Button>
             </form>
         </div>

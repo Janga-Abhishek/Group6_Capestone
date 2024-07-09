@@ -46,19 +46,17 @@ export const REGISTER_DOCTOR = gql`
     $lastname:String!,
     $email: String!,
     $phonenumber:String!,
-    $insuranceNumber:String!,
     $address:String!,
     $username: String!,
     $password: String!,
     $userType: String!) {  
     RegisterDoctor(firstname: $firstname,lastname: $lastname,email: $email,phonenumber: $phonenumber,
-      insuranceNumber:$insuranceNumber,address: $address,username: $username, password: $password,userType: $userType) {
+      address: $address,username: $username, password: $password,userType: $userType) {
       id 
       firstname
       lastname
       email
       phonenumber
-      insuranceNumber
       address
       username
       password
