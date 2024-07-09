@@ -11,10 +11,10 @@ mongoose
   .catch((err) => console.error("MongoDB connection error:", err));
 
 const AppointmentSchema = new mongoose.Schema({
-  patientName: String,
-  time: String,
-  issue: String,
-  previousRecords: String,
+  doctorId: String,
+  appointmentDate: String,
+  appointmentTime: String,
+  status: { type: String, default: "Available" },
 });
 const Appointment = mongoose.model("Appointment", AppointmentSchema);
 
@@ -30,7 +30,6 @@ const UserSchema = new mongoose.Schema({
   insuranceNumber: String,
   userType: String,
   registeredDate: { type: Date, default: Date.now },
-
 });
 const User = mongoose.model("User", UserSchema);
 
@@ -49,23 +48,26 @@ const DoctorSchema = new mongoose.Schema({
 const Doctor = mongoose.model("Doctor", DoctorSchema);
 
 const UserAppointmentSchema = new mongoose.Schema({
-  username: { type: String, ref: 'User' },
+  username: { type: String, ref: "User" },
   appointmentdate: String,
   appointmenttime: String,
   issuedescription: String,
 });
 
-const BookedAppointments = mongoose.model("BookedAppointments", UserAppointmentSchema);
+const BookedAppointment = mongoose.model(
+  "BookedAppointment",
+  UserAppointmentSchema
+);
 
 // Define GraphQL schema
 const typeDefs = gql`
   scalar Date
   type Appointment {
     id: ID!
-    patientName: String!
-    time: String!
-    issue: String
-    previousRecords: String
+    doctorId: String!
+    appointmentDate: String!
+    appointmentTime: String!
+    status: String!
   }
 
   type User {
@@ -82,24 +84,24 @@ const typeDefs = gql`
     registeredDate: Date!
   }
 
- #typedefs of doctor
- type Doctor {
-    id:ID!
-    firstname: String!,
-    lastname: String!,
-    email: String!,
-    phonenumber: String!,
-    address: String!,
-    username: String!,
-    password: String!,
-    userType: String!,
-    registeredDate: Date!,
+  #typedefs of doctor
+  type Doctor {
+    id: ID!
+    firstname: String!
+    lastname: String!
+    email: String!
+    phonenumber: String!
+    address: String!
+    username: String!
+    password: String!
+    userType: String!
+    registeredDate: Date!
   }
 
-  type BookedAppointments{
-    id:ID!
-    username:String!
-    appointmentdate:String!
+  type BookedAppointment {
+    id: ID!
+    username: String!
+    appointmentdate: String!
     appointmenttime: String!
     issuedescription: String!
   }
@@ -111,8 +113,10 @@ const typeDefs = gql`
     checkEmail(email: String!): Boolean
     appointment(id: ID!): Appointment
     appointments: [Appointment]
-    doctor(id:ID!):Doctor
-    doctors:[Doctor]
+    doctor(id: ID!): Doctor
+    doctors: [Doctor]
+    bookedappointments: [BookedAppointment]
+    bookedappointment(id: ID!): BookedAppointment
   }
 
   type Mutation {
@@ -128,7 +132,14 @@ const typeDefs = gql`
       userType: String!
     ): User
     loginUser(username: String!, password: String!): User
-    BookAppointment(username:String!,appointmentdate:String!,appointmenttime: String!,issuedescription: String!):BookedAppointments
+    loginDoctor(username: String!, password: String!): Doctor
+
+    BookAppointment(
+      username: String!
+      appointmentdate: String!
+      appointmenttime: String!
+      issuedescription: String!
+    ): BookedAppointment
 
     #MUTATION TO REGISTER DOCTOR
     RegisterDoctor(
@@ -141,6 +152,11 @@ const typeDefs = gql`
       password: String!
       userType: String!
     ): Doctor
+    createAppointment(
+      doctorId: ID!
+      appointmentDate: String!
+      appointmentTime: String!
+    ): Appointment
   }
 `;
 
@@ -157,13 +173,12 @@ const resolvers = {
     },
 
     //QUERY FOR DOCTOR
-    doctor:async(_, {id}) => {
-      try{
-        const doctor=await Doctor.findById(id);
+    doctor: async (_, { id }) => {
+      try {
+        const doctor = await Doctor.findById(id);
         return doctor;
-      }
-      catch(error){
-        throw new Error("Doctor not found")
+      } catch (error) {
+        throw new Error("Doctor not found");
       }
     },
 
@@ -177,11 +192,10 @@ const resolvers = {
     },
     /*QUERY TO RETRIVE DOCTORS BASED ON USERTYPE */
     doctors: async () => {
-      try{
-        const doctors=await Doctor.find({userType:"doctor"});
+      try {
+        const doctors = await Doctor.find({ userType: "doctor" });
         return doctors;
-      }
-      catch(error){
+      } catch (error) {
         throw new Error("Error fetching list of all doctors details");
       }
     },
@@ -213,6 +227,25 @@ const resolvers = {
         return !!user;
       } catch (error) {
         throw new Error("Error fetching users");
+      }
+    },
+    bookedappointment: async (_, { id }) => {
+      try {
+        const appointment = await BookedAppointment.findById(id);
+        return appointment;
+      } catch (error) {
+        throw new Error("Booked appointment not found");
+      }
+    },
+    bookedappointments: async () => {
+      try {
+        const bookedAppointments = await BookedAppointment.find();
+        const validAppointments = bookedAppointments.filter(
+          (appointment) => appointment.username !== null
+        );
+        return validAppointments;
+      } catch (error) {
+        throw new Error("Error fetching booked appointments");
       }
     },
   },
@@ -281,6 +314,22 @@ const resolvers = {
         throw new Error("Error registering doctor");
       }
     },
+    createAppointment: async (
+      _,
+      { doctorId, appointmentDate, appointmentTime }
+    ) => {
+      const appointment = new Appointment({
+        doctorId,
+        appointmentDate,
+        appointmentTime,
+      });
+      try {
+        return await appointment.save();
+      } catch (error) {
+        throw new Error("Error creating appointment");
+      }
+    },
+
     loginUser: async (_, { username, password }) => {
       try {
         const user = await User.findOne({ username, password });
@@ -293,21 +342,28 @@ const resolvers = {
         throw new Error("Invalid credentials");
       }
     },
+    loginDoctor: async (_, { username, password }) => {
+      try {
+        const user = await Doctor.findOne({ username, password });
+        if (!user) {
+          throw new Error("Invalid credentials");
+        }
+        return user;
+      } catch (error) {
+        console.error("Error in loginDoctor resolver:", error);
+        throw new Error("Invalid credentials");
+      }
+    },
     BookAppointment: async (
       _,
-      {
-        username,
-        appointmentdate,
-        appointmenttime,
-        issuedescription,
-      }
+      { username, appointmentdate, appointmenttime, issuedescription }
     ) => {
       try {
-        const appointment = new BookedAppointments({
-        username,
-        appointmentdate,
-        appointmenttime,
-        issuedescription,
+        const appointment = new BookedAppointment({
+          username,
+          appointmentdate,
+          appointmenttime,
+          issuedescription,
         });
         await appointment.save();
         return appointment;
@@ -316,7 +372,6 @@ const resolvers = {
         throw new Error("Error saving appointment");
       }
     },
-
   },
 };
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useMutation } from "@apollo/client";
 import emailjs from "emailjs-com";
-import { LOGIN_USER } from "../../graphql/middleware";
+import { LOGIN_USER, LOGIN_DOCTOR } from "../../graphql/middleware";
 import Menu from "../../components/Menu";
 import "../../Stylesheet/Login_Register.css";
 
@@ -39,6 +39,7 @@ const AdministrationLogin = () => {
   const [loginError, setLoginError] = useState("");
   const [emailSent, setEmailSent] = useState(false);
   const [loginUser] = useMutation(LOGIN_USER);
+  const [loginDoctor] = useMutation(LOGIN_DOCTOR);
 
   useEffect(() => {
     const storedUsername = sessionStorage.getItem("username");
@@ -109,23 +110,34 @@ const AdministrationLogin = () => {
     }
 
     try {
-      const { data } = await loginUser({
-        variables: { username, password, userType },
-      });
+      let data;
+      if (userType === "admin") {
+        const result = await loginUser({
+          variables: { username, password },
+        });
+        data = result.data.loginUser;
+      } else if (userType === "doctor") {
+        const result = await loginDoctor({
+          variables: { username, password },
+        });
+        data = result.data.loginDoctor;
+      }
 
-      if (data && data.loginUser) {
-        const user = data.loginUser;
-
-        if (user.userType !== userType) {
+      if (data) {
+        if (data.userType !== userType) {
           setLoginError("User type doesn't match");
           return;
         }
 
         sessionStorage.setItem("username", username);
-        sessionStorage.setItem("userType", user.userType);
+        sessionStorage.setItem("userType", data.userType);
+
+        if (data.userType === "doctor") {
+          sessionStorage.setItem("doctorId", data.id);
+        }
 
         const systemInfo = getSystemInfo();
-        sendEmailNotification(username, user.email, systemInfo);
+        sendEmailNotification(username, data.email, systemInfo);
       } else {
         setLoginError("Invalid credentials");
       }
@@ -145,7 +157,6 @@ const AdministrationLogin = () => {
 
   return (
     <div>
-      {/* <Menu /> */}
       <div className="AdministrationContainerStyle">
         <form className="formStyle" onSubmit={handleLogin}>
           <img

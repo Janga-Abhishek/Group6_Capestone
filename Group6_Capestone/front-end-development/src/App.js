@@ -14,6 +14,7 @@ import UserDashboard from "./pages/User/UserDashboard";
 import BookAppointment from "./pages/User/BookAppointment";
 import DoctorsList from "./pages/Administration/Admin/DoctorsList";
 import PatientsList from "./pages/Administration/Admin/PatientsList";
+import CreateAppointment from "./pages/Administration/Admin/CreateAppointment";
 
 const client = new ApolloClient({
   uri: "http://localhost:4000",
@@ -39,6 +40,7 @@ const App = () => (
         <Route path="/patientsList" element={<PatientsList />}></Route>
         <Route path="/appointmentDetail/:id" element={<AppointmentDetail />} />
         <Route path="/bookAppointments" element={<BookAppointment />} />
+        <Route path="/createAppointment" element={<CreateAppointment />} />
       </Routes>
     </Router>
   </ApolloProvider>
