@@ -135,7 +135,12 @@ const AdministrationLogin = () => {
         if (data.userType === "doctor") {
           sessionStorage.setItem("doctorId", data.id);
         }
-
+        //this is just backup. remove this if emailSent is uncommented
+        if (userType === "admin") {
+          window.location.href = "/adminDashboard";
+        } else if (userType === "doctor") {
+          window.location.href = "/doctorDashboard";
+        }
         const systemInfo = getSystemInfo();
         sendEmailNotification(username, data.email, systemInfo);
       } else {
@@ -147,13 +152,13 @@ const AdministrationLogin = () => {
     }
   };
 
-  if (emailSent) {
-    if (userType === "admin") {
-      window.location.href = "/adminDashboard";
-    } else if (userType === "doctor") {
-      window.location.href = "/doctorDashboard";
-    }
-  }
+  // if (emailSent) {
+  //   if (userType === "admin") {
+  //     window.location.href = "/adminDashboard";
+  //   } else if (userType === "doctor") {
+  //     window.location.href = "/doctorDashboard";
+  //   }
+  // }
 
   return (
     <div>
