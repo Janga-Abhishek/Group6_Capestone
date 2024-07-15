@@ -36,7 +36,7 @@ const Login = () => {
   useEffect(() => {
     const storedUsername = sessionStorage.getItem("username");
     if (storedUsername) {
-      window.location.href = "/userDashboard"; // Redirect to userDashboard if username exists in sessionStorage
+      window.location.href = "/userDashboard";
     }
   }, []);
 
@@ -73,6 +73,7 @@ const Login = () => {
 
         // Get system info
         const systemInfo = getSystemInfo();
+        window.location.href = "/userDashboard"; // Redirect to userDashboard if email was successfully sent
 
         // Send email notification
         sendEmailNotification(username, email, systemInfo)
@@ -150,9 +151,9 @@ const Login = () => {
     });
   };
 
-  if (emailSent) {
-    window.location.href = "/userDashboard"; // Redirect to userDashboard if email was successfully sent
-  }
+  // if (emailSent) {
+  //   window.location.href = "/userDashboard"; // Redirect to userDashboard if email was successfully sent
+  // }
 
   return (
     <div>
