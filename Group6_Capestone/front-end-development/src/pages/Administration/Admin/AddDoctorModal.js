@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
-import { useMutation, useLazyQuery } from "@apollo/client";
-import { REGISTER_DOCTOR, CHECK_USERNAME, CHECK_EMAIL } from '../../../graphql/middleware';
+import { useMutation,useQuery, useLazyQuery } from "@apollo/client";
+import { REGISTER_DOCTOR, CHECK_USERNAME, CHECK_EMAIL,GET_DEPARTMENTS } from '../../../graphql/middleware';
 
 const buttonStyle = {
     width: "100%",
@@ -27,8 +27,9 @@ const AddDoctorModal = () => {
     const [password, setPassword] = useState("");
     const [address, setAddress] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
-    const [rePassword, setRePassword] = useState("");
+    const [departmentId, setDepartmentId] = useState("");
     const [registerDoctor] = useMutation(REGISTER_DOCTOR);
+    const { data: departmentData, loading, error } = useQuery(GET_DEPARTMENTS);
     const [checkUsername] = useLazyQuery(CHECK_USERNAME);
     const [checkEmail] = useLazyQuery(CHECK_EMAIL);
 
@@ -38,7 +39,6 @@ const AddDoctorModal = () => {
     const [emailError, setEmailError] = useState("");
     const [usernameError, setUsernameError] = useState("");
     const [passwordError, setPasswordError] = useState("");
-    const [rePasswordError, setRePasswordError] = useState("");
     const [addressError, setAddressError] = useState("");
     const [phoneNumberError, setPhoneNumberError] = useState("");
     /*--------------ALERT MESSAGES------------------- */
@@ -64,6 +64,7 @@ const AddDoctorModal = () => {
                     address: address,
                     username: username,
                     userType: "doctor",
+                    departmentId: departmentId,
                 }
             });
             setAlertMessage("Registration Successful!");
@@ -79,6 +80,10 @@ const AddDoctorModal = () => {
             setTimeout(() => setShowAlert(false), 3000); // Close alert after 3 seconds
         }
     }
+    if (loading) return <p>Loading departments...</p>;
+    if (error) return <p>Error loading departments: {error.message}</p>;
+
+    const departments = departmentData?.departments || [];
 
     const clearForm = () => {
         setFirstName("");
@@ -88,7 +93,6 @@ const AddDoctorModal = () => {
         setPassword("");
         setAddress("");
         setPhoneNumber("");
-        setRePassword("");
     }
 
     const validateForm = async () => {
@@ -223,10 +227,23 @@ const AddDoctorModal = () => {
                 <span className="errorStyle">{usernameError}</span>
                 <input type="password" placeholder="Password" className="inputStyle" value={password} onChange={(e) => { setPassword(e.target.value); setPasswordError(""); }} />
                 <span className="errorStyle">{passwordError}</span>
-                <input type="password" placeholder="Confirm Password" className="inputStyle" value={rePassword} onChange={(e) => { setRePassword(e.target.value); setRePasswordError(""); }} />
-                <span className="errorStyle">{rePasswordError}</span>
                 <input type="text" placeholder="Address" className="inputStyle" value={address} onChange={(e) => { setAddress(e.target.value); setAddressError(""); }} />
                 <span className="errorStyle">{addressError}</span>
+                <div>
+                <label>Department:</label>
+                <select
+                    value={departmentId}
+                    onChange={(e) => setDepartmentId(e.target.value)}
+                    required
+                >
+                    <option value="" disabled>Select a department</option>
+                    {departments.map((department) => (
+                        <option key={department.id} value={department.id}>
+                            {department.departmentname}
+                        </option>
+                    ))}
+                </select>
+            </div>
                 <Button type="submit" variant='success'>Register</Button>
             </form>
         </div>

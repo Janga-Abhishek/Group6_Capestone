@@ -50,6 +50,7 @@ const DoctorSchema = new mongoose.Schema({
   username: String,
   password: String,
   userType: String,
+  departmentId: { type: mongoose.Schema.Types.ObjectId, ref: "Department" },
   registeredDate: { type: Date, default: Date.now },
 });
 const Doctor = mongoose.model("Doctor", DoctorSchema);
@@ -94,6 +95,7 @@ const typeDefs = gql`
   #typedefs of doctor
   type Doctor {
     id: ID!
+    departmentId: ID!
     firstname: String!
     lastname: String!
     email: String!
@@ -173,6 +175,7 @@ const typeDefs = gql`
       username: String!
       password: String!
       userType: String!
+      departmentId: ID!
     ): Doctor
     createAppointment(
       doctorId: ID!
@@ -337,6 +340,7 @@ const resolvers = {
         username,
         password,
         userType,
+        departmentId,
       }
     ) => {
       try {
@@ -349,6 +353,7 @@ const resolvers = {
           username,
           password,
           userType,
+          departmentId,
         });
         await doctor.save();
         return doctor;

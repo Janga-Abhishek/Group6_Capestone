@@ -70,6 +70,7 @@ export const REGISTER_DOCTOR = gql`
     $username: String!
     $password: String!
     $userType: String!
+    $departmentId:ID!
   ) {
     RegisterDoctor(
       firstname: $firstname
@@ -80,6 +81,7 @@ export const REGISTER_DOCTOR = gql`
       username: $username
       password: $password
       userType: $userType
+      departmentId:$departmentId
     ) {
       id
       firstname
@@ -90,6 +92,7 @@ export const REGISTER_DOCTOR = gql`
       username
       password
       userType
+      departmentId
     }
   }
 `;
