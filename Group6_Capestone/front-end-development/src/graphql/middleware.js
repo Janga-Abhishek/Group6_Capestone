@@ -94,6 +94,20 @@ export const REGISTER_DOCTOR = gql`
   }
 `;
 
+//MUTATION FOR REGISTER DEPARTMENT
+export const REGISTER_DEPARTMENT=gql`
+mutation RegisterDepartment(
+  $departmentname:String!
+){
+  RegisterDepartment(
+    departmentname:$departmentname
+  ) {
+    id
+    departmentname
+  }
+}
+`
+
 export const BOOK_APPOINTMENT = gql`
   mutation BookAppointment(
     $username: String!
@@ -145,6 +159,15 @@ export const GET_USERS = gql`
     }
   }
 `;
+
+export const GET_DEPARTMENTS=gql`
+query departments{
+departments{
+  id
+  departmentname
+}
+}`;
+
 
 export const GET_DOCTORS = gql`
   query GetDoctors {

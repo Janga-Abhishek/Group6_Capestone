@@ -33,6 +33,13 @@ const UserSchema = new mongoose.Schema({
 });
 const User = mongoose.model("User", UserSchema);
 
+//DEPARTMENT SCHEMA
+const DepartmentSchema=new mongoose.Schema({
+  departmentname:String
+});
+const Department=mongoose.model("Department",DepartmentSchema);
+
+
 //DEFINE DOCTOR SCHEMA
 const DoctorSchema = new mongoose.Schema({
   firstname: String,
@@ -106,6 +113,13 @@ const typeDefs = gql`
     issuedescription: String!
   }
 
+
+  type Department{
+    id:ID!
+    departmentname:String!
+  }
+
+
   type Query {
     user(id: ID!): User
     users: [User]
@@ -117,6 +131,8 @@ const typeDefs = gql`
     doctors: [Doctor]
     bookedappointments: [BookedAppointment]
     bookedappointment(id: ID!): BookedAppointment
+    department(id:ID!):Department
+    departments:[Department]
   }
 
   type Mutation {
@@ -133,6 +149,12 @@ const typeDefs = gql`
     ): User
     loginUser(username: String!, password: String!): User
     loginDoctor(username: String!, password: String!): Doctor
+
+    #REGISTER DEPARTMENT
+    RegisterDepartment(
+      departmentname:String!
+    ):Department
+
 
     BookAppointment(
       username: String!
@@ -188,6 +210,26 @@ const resolvers = {
         return users;
       } catch (error) {
         throw new Error("Error fetching users");
+      }
+    },
+    /*QUERY TO RETRIVE ALL DEPARTMENTS */
+    departments:async()=>{
+      try{
+        return await Department.find();
+      }
+      catch(error)
+      {
+        throw new Error('Error fetching depaertments');
+      }
+    },
+    department:async(_, {id}) =>{
+      try
+      {
+        return await Department.findById(id);
+      }
+      catch(error)
+      {
+        throw new Error('Error fetching single department');
       }
     },
     /*QUERY TO RETRIVE DOCTORS BASED ON USERTYPE */
@@ -312,6 +354,21 @@ const resolvers = {
         return doctor;
       } catch (error) {
         throw new Error("Error registering doctor");
+      }
+    },
+
+    //MUTATION TO REGISTER DEPARTMENT
+    RegisterDepartment:async(_,{departmentname})=>{
+      try{
+        const department=new Department({
+          departmentname
+        });
+        await department.save();
+        return department;
+      }
+      catch(error)
+      {
+        throw new Error("Error Registering Department")
       }
     },
     createAppointment: async (

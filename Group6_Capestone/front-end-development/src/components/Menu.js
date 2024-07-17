@@ -187,6 +187,21 @@ const Menu = () => {
                       Appointments
                     </Link>
                   </li>
+
+                  <li className="liStyle">
+                    <Link
+                      to="/registerDepartment"
+                      style={
+                        hoverIndex === 6
+                          ? { ...linkStyle, ...linkHoverStyle }
+                          : linkStyle
+                      }
+                      onMouseEnter={() => setHoverIndex(6)}
+                      onMouseLeave={() => setHoverIndex(null)}
+                    >
+                      Add Department
+                    </Link>
+                  </li>
                 </>
               )}
               <li className="liStyle">
