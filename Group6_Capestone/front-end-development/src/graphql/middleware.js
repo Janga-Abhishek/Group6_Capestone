@@ -114,21 +114,27 @@ mutation RegisterDepartment(
 export const BOOK_APPOINTMENT = gql`
   mutation BookAppointment(
     $username: String!
-    $appointmentdate: String!
-    $appointmenttime: String!
-    $issuedescription: String!
+    $doctorId: String!
+    $appointmentDate: String!
+    $appointmentTime: String!
+    $issueDescription: String!
+    $subscription: Boolean!
   ) {
     BookAppointment(
       username: $username
-      appointmentdate: $appointmentdate
-      appointmenttime: $appointmenttime
-      issuedescription: $issuedescription
+      doctorId: $doctorId
+      appointmentDate: $appointmentDate
+      appointmentTime: $appointmentTime
+      issueDescription: $issueDescription
+      subscription: $subscription
     ) {
       id
       username
-      appointmentdate
-      appointmenttime
-      issuedescription
+      doctorId
+      appointmentDate
+      appointmentTime
+      issueDescription
+      subscription
     }
   }
 `;
@@ -245,6 +251,35 @@ export const UPDATE_APPOINTMENT = gql`
       date
       time
       issue
+    }
+  }
+`;
+
+
+
+export const GET_DOCTORS_BY_DEPARTMENT = gql`
+  query GetDoctorsByDepartment($departmentId: ID!) {
+    doctorsByDepartment(departmentId: $departmentId) {
+      id
+      firstname
+      lastname
+    }
+  }
+`;
+
+export const GET_AVAILABLE_DATES = gql`
+  query GetAvailableDates($doctorId: ID!) {
+    availableDates(doctorId: $doctorId){
+    appointmentDate
+    }
+  }
+
+`;
+
+export const GET_AVAILABLE_TIMES = gql`
+  query GetAvailableTimes($doctorId: ID!, $date: String!) {
+    availableTimes(doctorId: $doctorId, appointmentDate: $date){
+    appointmentTime
     }
   }
 `;
