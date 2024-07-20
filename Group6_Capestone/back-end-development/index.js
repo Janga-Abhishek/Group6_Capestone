@@ -18,8 +18,6 @@ const AppointmentSchema = new mongoose.Schema({
 });
 const Appointment = mongoose.model("Appointment", AppointmentSchema);
 
-
-
 // Define User schema
 const UserSchema = new mongoose.Schema({
   firstname: String,
@@ -36,11 +34,10 @@ const UserSchema = new mongoose.Schema({
 const User = mongoose.model("User", UserSchema);
 
 //DEPARTMENT SCHEMA
-const DepartmentSchema=new mongoose.Schema({
-  departmentname:String
+const DepartmentSchema = new mongoose.Schema({
+  departmentname: String,
 });
-const Department=mongoose.model("Department",DepartmentSchema);
-
+const Department = mongoose.model("Department", DepartmentSchema);
 
 //DEFINE DOCTOR SCHEMA
 const DoctorSchema = new mongoose.Schema({
@@ -66,7 +63,22 @@ const UserAppointmentSchema = new mongoose.Schema({
   subscription: Boolean,
   doctorId: { type: mongoose.Types.ObjectId, ref: "Doctor" },
 });
-const BookedAppointment = mongoose.model("BookedAppointment", UserAppointmentSchema);
+const BookedAppointment = mongoose.model(
+  "BookedAppointment",
+  UserAppointmentSchema
+);
+const UserHistorySchema = new mongoose.Schema({
+  username: String,
+  appointmentId: { type: mongoose.Types.ObjectId, ref: "BookedAppointment" },
+  appointmentDate: String,
+  appointmentTime: String,
+  issueDescription: String,
+  prescribedMedicines: String,
+  doctorId: { type: mongoose.Types.ObjectId, ref: "Doctor" },
+  status: String,
+  additionalNotes: String,
+});
+const UserHistory = mongoose.model("UserHistory", UserHistorySchema);
 
 // Define GraphQL schema
 const typeDefs = gql`
@@ -115,15 +127,26 @@ const typeDefs = gql`
     appointmentDate: String!
     appointmentTime: String!
     issueDescription: String!
-    subscription:Boolean!
+    subscription: Boolean!
   }
 
-
-  type Department{
-    id:ID!
-    departmentname:String!
+  type UserHistory {
+    id: ID!
+    username: String!
+    appointmentId: ID!
+    appointmentDate: String!
+    appointmentTime: String!
+    issueDescription: String!
+    prescribedMedicines: String!
+    doctorId: ID!
+    status: String!
+    additionalNotes: String!
   }
 
+  type Department {
+    id: ID!
+    departmentname: String!
+  }
 
   type Query {
     user(id: ID!): User
@@ -134,16 +157,21 @@ const typeDefs = gql`
     appointments: [Appointment]
     doctor(id: ID!): Doctor
     doctors: [Doctor]
-    bookedappointments: [BookedAppointment]
-    bookedappointment(id: ID!): BookedAppointment
-    department(id:ID!):Department
-    departments:[Department]
+    department(id: ID!): Department
+    departments: [Department]
     doctorsByDepartment(departmentId: ID!): [Doctor!]!
     availableDates(doctorId: ID!): [Appointment!]!
     availableTimes(doctorId: ID!, appointmentDate: String!): [Appointment!]!
+    bookedappointments(doctorId: ID!, date: String!): [BookedAppointment]
+    bookedappointment(id: ID!): BookedAppointment
+    userHistory(id: ID!): UserHistory
+    userHistories(username: String!): [UserHistory]
+    deleteBookedAppointment(id: ID!): BookedAppointment
   }
 
   type Mutation {
+    deleteBookedAppointment(id: ID!): BookedAppointment
+
     RegisterUser(
       firstname: String!
       lastname: String!
@@ -159,19 +187,28 @@ const typeDefs = gql`
     loginDoctor(username: String!, password: String!): Doctor
 
     #REGISTER DEPARTMENT
-    RegisterDepartment(
-      departmentname:String!
-    ):Department
-
+    RegisterDepartment(departmentname: String!): Department
 
     BookAppointment(
       username: String!
-      doctorId:String!
+      doctorId: String!
       appointmentDate: String!
       appointmentTime: String!
       issueDescription: String!
-      subscription:Boolean!
+      subscription: Boolean!
     ): BookedAppointment
+
+    createUserHistory(
+      username: String!
+      appointmentId: ID!
+      appointmentDate: String!
+      appointmentTime: String!
+      issueDescription: String!
+      prescribedMedicines: String!
+      doctorId: ID!
+      status: String!
+      additionalNotes: String!
+    ): UserHistory
 
     #MUTATION TO REGISTER DOCTOR
     RegisterDoctor(
@@ -224,23 +261,18 @@ const resolvers = {
       }
     },
     /*QUERY TO RETRIVE ALL DEPARTMENTS */
-    departments:async()=>{
-      try{
+    departments: async () => {
+      try {
         return await Department.find();
-      }
-      catch(error)
-      {
-        throw new Error('Error fetching depaertments');
+      } catch (error) {
+        throw new Error("Error fetching depaertments");
       }
     },
-    department:async(_, {id}) =>{
-      try
-      {
+    department: async (_, { id }) => {
+      try {
         return await Department.findById(id);
-      }
-      catch(error)
-      {
-        throw new Error('Error fetching single department');
+      } catch (error) {
+        throw new Error("Error fetching single department");
       }
     },
     /*QUERY TO RETRIVE DOCTORS BASED ON USERTYPE */
@@ -290,15 +322,36 @@ const resolvers = {
         throw new Error("Booked appointment not found");
       }
     },
-    bookedappointments: async () => {
+
+    // bookedappointments: async () => {
+    //   try {
+    //     const bookedAppointments = await BookedAppointment.find();
+    //     const validAppointments = bookedAppointments.filter(
+    //       (appointment) => appointment.username !== null
+    //     );
+    //     return validAppointments;
+    //   } catch (error) {
+    //     throw new Error("Error fetching booked appointments");
+    //   }
+    // },
+    bookedappointments: async (_, { doctorId, date }) => {
       try {
-        const bookedAppointments = await BookedAppointment.find();
-        const validAppointments = bookedAppointments.filter(
+        console.log("Doctor ID:", doctorId);
+        console.log("Appointment Date:", date);
+
+        const objectId = new mongoose.Types.ObjectId(doctorId);
+
+        const bookedAppointments = await BookedAppointment.find({
+          doctorId: objectId,
+          appointmentDate: date,
+        });
+
+        return bookedAppointments.filter(
           (appointment) => appointment.username !== null
         );
-        return validAppointments;
       } catch (error) {
-        throw new Error("Error fetching booked appointments");
+        console.error("Error fetching booked appointments:", error.message);
+        throw new Error("Error fetching booked appointments: " + error.message);
       }
     },
 
@@ -309,24 +362,58 @@ const resolvers = {
 
     availableDates: async (_, { doctorId }) => {
       // Fetch and return available dates for the given doctor ID
-      const appointments = await Appointment.find({ doctorId, status: "Available" });
+      const appointments = await Appointment.find({
+        doctorId,
+        status: "Available",
+      });
       const removeDuplicates = (array, key) => {
-        return [...new Map(array.map(item => [item[key], item])).values()];
+        return [...new Map(array.map((item) => [item[key], item])).values()];
       };
 
-      const uniqueAppointments = removeDuplicates(appointments, 'appointmentDate');
-      return uniqueAppointments;      
+      const uniqueAppointments = removeDuplicates(
+        appointments,
+        "appointmentDate"
+      );
+      return uniqueAppointments;
     },
-    
+
     availableTimes: async (_, { doctorId, appointmentDate }) => {
       // Fetch and return available times for the given doctor ID and date
-      const appointments = await Appointment.find({ doctorId, appointmentDate,status: "Available" });
+      const appointments = await Appointment.find({
+        doctorId,
+        appointmentDate,
+        status: "Available",
+      });
       const removeDuplicates = (array, key) => {
-        return [...new Map(array.map(item => [item[key], item])).values()];
+        return [...new Map(array.map((item) => [item[key], item])).values()];
       };
 
-      const uniqueAppointments = removeDuplicates(appointments, 'appointmentTime');
+      const uniqueAppointments = removeDuplicates(
+        appointments,
+        "appointmentTime"
+      );
       return uniqueAppointments;
+    },
+
+    // userHistory: async (_, { id }) => {
+    //   try {
+    //     const history = await UserHistory.findById(id);
+    //     return history;
+    //   } catch (error) {
+    //     throw new Error("Error fetching user history");
+    //   }
+    // },
+
+    userHistories: async (_, { username }) => {
+      console.log("Received username:", username); // Log the input parameter
+      try {
+        const histories = await UserHistory.find({ username });
+        console.log("Fetched histories:", histories); // Log the fetched data
+        return histories;
+      } catch (error) {
+        console.error("Error fetching user histories:", error.message);
+        throw new Error("Error fetching user histories");
+      }
     },
   },
 
@@ -397,20 +484,16 @@ const resolvers = {
       }
     },
 
-   
-
     //MUTATION TO REGISTER DEPARTMENT
-    RegisterDepartment:async(_,{departmentname})=>{
-      try{
-        const department=new Department({
-          departmentname
+    RegisterDepartment: async (_, { departmentname }) => {
+      try {
+        const department = new Department({
+          departmentname,
         });
         await department.save();
         return department;
-      }
-      catch(error)
-      {
-        throw new Error("Error Registering Department")
+      } catch (error) {
+        throw new Error("Error Registering Department");
       }
     },
     createAppointment: async (
@@ -453,15 +536,38 @@ const resolvers = {
         throw new Error("Invalid credentials");
       }
     },
-    BookAppointment: async (_, { username, doctorId, appointmentDate, appointmentTime, issueDescription, subscription }) => {
+    BookAppointment: async (
+      _,
+      {
+        username,
+        doctorId,
+        appointmentDate,
+        appointmentTime,
+        issueDescription,
+        subscription,
+      }
+    ) => {
       try {
-        const takenappointment = await Appointment.findOne({ doctorId, appointmentDate, appointmentTime, status: "Available" });
-        if (!takenappointment) throw new Error("The selected time slot is no longer available.");
-    
+        const takenappointment = await Appointment.findOne({
+          doctorId,
+          appointmentDate,
+          appointmentTime,
+          status: "Available",
+        });
+        if (!takenappointment)
+          throw new Error("The selected time slot is no longer available.");
+
         takenappointment.status = "taken";
         await takenappointment.save();
-    
-        const appointment = new BookedAppointment({ username, doctorId, appointmentDate, appointmentTime, issueDescription, subscription });
+
+        const appointment = new BookedAppointment({
+          username,
+          doctorId,
+          appointmentDate,
+          appointmentTime,
+          issueDescription,
+          subscription,
+        });
         await appointment.save();
         return appointment;
       } catch (error) {
@@ -469,12 +575,30 @@ const resolvers = {
         throw new Error("Error saving appointment");
       }
     },
+    createUserHistory: async (_, args) => {
+      try {
+        const userHistory = new UserHistory(args);
+        await userHistory.save();
+        return userHistory;
+      } catch (error) {
+        throw new Error("Error creating user history");
+      }
+    },
+    deleteBookedAppointment: async (_, { id }) => {
+      try {
+        const deletedAppointment = await BookedAppointment.findByIdAndDelete(
+          id
+        );
+        if (!deletedAppointment) {
+          throw new Error("Appointment not found");
+        }
+        return deletedAppointment;
+      } catch (error) {
+        throw new Error(`Failed to delete appointment: ${error.message}`);
+      }
+    },
   },
-
-
 };
-
-
 
 // Create Apollo Server instance
 const server = new ApolloServer({ typeDefs, resolvers });
