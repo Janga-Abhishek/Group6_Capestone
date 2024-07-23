@@ -1,5 +1,13 @@
-const { ApolloServer, gql } = require("apollo-server");
+const express = require("express");
+const multer = require("multer");
 const mongoose = require("mongoose");
+const path = require("path");
+const { ApolloServer } = require("apollo-server-express");
+const { ApolloServer: ApolloServerStandalone } = require("apollo-server");
+const { gql } = require("apollo-server");
+
+const cors = require("cors");
+const fs = require("fs");
 
 // Connect to MongoDB
 mongoose
@@ -9,7 +17,24 @@ mongoose
   )
   .then(() => console.log("MongoDB connection successful"))
   .catch((err) => console.error("MongoDB connection error:", err));
+const fileSchema = new mongoose.Schema({
+  filename: String,
+  path: String,
+  mimetype: String,
+  documentName: String,
+  username: String,
+});
+const File = mongoose.model("File", fileSchema);
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+const upload = multer({ storage });
 const AppointmentSchema = new mongoose.Schema({
   doctorId: String,
   appointmentDate: String,
@@ -83,6 +108,14 @@ const UserHistory = mongoose.model("UserHistory", UserHistorySchema);
 // Define GraphQL schema
 const typeDefs = gql`
   scalar Date
+  type File {
+    id: ID!
+    filename: String!
+    path: String!
+    mimetype: String!
+    documentName: String!
+    username: String!
+  }
   type Appointment {
     id: ID!
     doctorId: String!
@@ -167,10 +200,12 @@ const typeDefs = gql`
     userHistory(id: ID!): UserHistory
     userHistories(username: String!): [UserHistory]
     deleteBookedAppointment(id: ID!): BookedAppointment
+    files: [File]
   }
 
   type Mutation {
     deleteBookedAppointment(id: ID!): BookedAppointment
+    uploadFile(filename: String!, path: String!, mimetype: String!): File
 
     RegisterUser(
       firstname: String!
@@ -233,6 +268,17 @@ const typeDefs = gql`
 // Define resolvers
 const resolvers = {
   Query: {
+    files: async () => {
+      return await File.find();
+    },
+    user: async (_, { id }) => {
+      try {
+        const user = await User.findById(id);
+        return user;
+      } catch (error) {
+        throw new Error("User not found");
+      }
+    },
     user: async (_, { id }) => {
       try {
         const user = await User.findById(id);
@@ -418,6 +464,11 @@ const resolvers = {
   },
 
   Mutation: {
+    uploadFile: async (_, { filename, path, mimetype }) => {
+      const file = new File({ filename, path, mimetype });
+      await file.save();
+      return file;
+    },
     RegisterUser: async (
       _,
       {
@@ -602,8 +653,103 @@ const resolvers = {
 
 // Create Apollo Server instance
 const server = new ApolloServer({ typeDefs, resolvers });
+const apolloServer = new ApolloServer({ typeDefs, resolvers });
+
+// Create Apollo Server standalone instance for another use case
+const standaloneServer = new ApolloServerStandalone({ typeDefs, resolvers });
+
+const app = express();
+app.use("/uploads", express.static("uploads"));
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Change this to your frontend's URL if different
+  })
+);
+app.post("/upload", upload.single("file"), (req, res) => {
+  const tempPath = req.file.path;
+  const targetPath = path.join(__dirname, "uploads", req.file.originalname);
+
+  // Read additional fields
+  const documentName = req.body.documentName;
+  const username = req.body.username;
+
+  fs.rename(tempPath, targetPath, (err) => {
+    if (err) return res.sendStatus(500);
+
+    // Save file info to database
+    const file = new File({
+      filename: req.file.originalname,
+      path: targetPath,
+      mimetype: req.file.mimetype,
+      documentName, // Save the document name
+      username, // Save the username
+    });
+
+    file
+      .save()
+      .then(() => {
+        res.status(200).json({
+          message: "File uploaded successfully",
+          filePath: targetPath,
+        });
+      })
+      .catch((error) => {
+        res.status(500).json({ error: "Failed to save file info" });
+      });
+  });
+});
+app.get("/files", async (req, res) => {
+  const { username } = req.query;
+  try {
+    const documents = await File.find({ username });
+    console.log("Fetched documents:", documents);
+
+    res.json({ files: documents }); // Ensure the response uses 'files'
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch documents" });
+  }
+});
+
+// Serve files based on filename
+app.get("./uploads/:filename", (req, res) => {
+  const { filename } = req.params;
+  const filePath = path.join(__dirname, "uploads", filename);
+  console.log("Fetched filepath:", filePath);
+
+  // Check if file exists
+  fs.access(filePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      return res.status(404).send("File not found");
+    }
+
+    // Serve the file
+    res.sendFile(filePath);
+  });
+});
 
 // Start the server
-server.listen().then(({ url }) => {
-  console.log(`Server ready at ${url}`);
+// server.listen().then(({ url }) => {
+//   console.log(`Server ready at ${url}`);
+// });
+// server.start().then(() => {
+//   server.applyMiddleware({ app });
+
+//   // Start the Express server
+//   app.listen({ port: 4000 }, () =>
+//     console.log(`Server ready at http://localhost:4000${server.graphqlPath}`)
+//   );
+// });
+// app.listen({ port: 4000 }, () =>
+//   console.log(`Server ready at http://localhost:4000${server.graphqlPath}`)
+// );
+const PORT = 4001;
+app.listen(PORT, () => {
+  console.log(
+    `🚀 Server ready at http://localhost:${PORT}${apolloServer.graphqlPath}`
+  );
+});
+
+// Optionally, start the standalone Apollo Server on another port
+standaloneServer.listen({ port: 4000 }).then(({ url }) => {
+  console.log(`🚀 Standalone Apollo Server ready at ${url}`);
 });

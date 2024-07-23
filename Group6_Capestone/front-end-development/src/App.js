@@ -15,7 +15,8 @@ import BookAppointment from "./pages/User/BookAppointment";
 import DoctorsList from "./pages/Administration/Admin/DoctorsList";
 import PatientsList from "./pages/Administration/Admin/PatientsList";
 import CreateAppointment from "./pages/Administration/Admin/CreateAppointment";
-import RegisterDepartment from './pages/Administration/Admin/registerDepartment'
+import RegisterDepartment from "./pages/Administration/Admin/registerDepartment";
+import FileHandler from "./pages/User/FileUpload";
 const client = new ApolloClient({
   uri: "http://localhost:4000",
   cache: new InMemoryCache(),
@@ -38,10 +39,14 @@ const App = () => (
         <Route path="/adminDashboard" element={<AdminDashboard />} />
         <Route path="/doctorsList" element={<DoctorsList />}></Route>
         <Route path="/patientsList" element={<PatientsList />}></Route>
-        <Route path="/registerDepartment" element={<RegisterDepartment/>}></Route>
+        <Route
+          path="/registerDepartment"
+          element={<RegisterDepartment />}
+        ></Route>
         <Route path="/appointmentDetail/:id" element={<AppointmentDetail />} />
         <Route path="/bookAppointments" element={<BookAppointment />} />
         <Route path="/createAppointment" element={<CreateAppointment />} />
+        <Route path="/uploadPrescription" element={<FileHandler />} />
       </Routes>
     </Router>
   </ApolloProvider>

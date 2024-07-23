@@ -25,6 +25,7 @@ const GET_USER_HISTORIES = gql`
       prescribedMedicines
       doctorId
       status
+      additionalNotes
     }
   }
 `;
