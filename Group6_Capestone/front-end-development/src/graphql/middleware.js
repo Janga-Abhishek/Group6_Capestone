@@ -283,3 +283,18 @@ export const GET_AVAILABLE_TIMES = gql`
     }
   }
 `;
+
+export const GET_USER_APPOINTMENTS_HISTORY =gql`
+ query GetUserHistories($username: String!) {
+   userHistories(username: $username) {
+    appointmentId
+    appointmentDate
+    appointmentTime
+    issueDescription
+    prescribedMedicines
+    doctorId
+    status
+    additionalNotes
+  }
+}
+`

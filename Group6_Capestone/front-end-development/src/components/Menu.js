@@ -129,7 +129,7 @@ const Menu = () => {
                   </li>
                   <li className="liStyle">
                     <Link
-                      to="/medical_records"
+                      to="/userAppointmentHistory"
                       style={
                         hoverIndex === 2
                           ? { ...linkStyle, ...linkHoverStyle }

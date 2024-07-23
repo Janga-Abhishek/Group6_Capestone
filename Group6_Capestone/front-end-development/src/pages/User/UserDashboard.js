@@ -90,7 +90,7 @@ const UserDashboard = () => {
             />
             <span style={navTextStyle}>Upload Prescription</span>
           </Link>
-          <Link to="/medical_records" style={navButtonStyle}>
+          <Link to="/userAppointmentHistory" style={navButtonStyle}>
             <img
               src="/images/medicalRecords.png"
               alt="Medical Records"
