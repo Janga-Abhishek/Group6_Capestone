@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Menu from "../../components/Menu";
 import Banner from "../../components/Banner";
 import Footer from "../../components/Footer";
+import PopUpModal from "../../components/PopUpModal";
 
 const containerStyle = {
   display: "flex",
@@ -49,6 +50,7 @@ const navTextStyle = {
 
 const UserDashboard = () => {
   const [username, setUsername] = useState("");
+  const [openModal, setCloseModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,7 +60,9 @@ const UserDashboard = () => {
     } else {
       navigate("/");
     }
+    setCloseModal(true);
   }, [navigate]);
+  const closeModal = () => setCloseModal(false);
 
   return (
     <div>
@@ -101,6 +105,7 @@ const UserDashboard = () => {
         </div>
       </div>
       <Footer />
+      <PopUpModal openModal={openModal} closeModal={closeModal}/>
     </div>
   );
 };

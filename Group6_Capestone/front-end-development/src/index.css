@@ -11,3 +11,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.custom-modal {
+  width: 30%;
+  max-width: 50%; /* Ensures it doesn't exceed 50% of the viewport width */
+  margin: auto; /* Centers the modal horizontally */
+  margin-top: 10rem;
+}
