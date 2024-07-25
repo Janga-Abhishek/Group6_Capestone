@@ -298,3 +298,19 @@ export const GET_USER_APPOINTMENTS_HISTORY =gql`
   }
 }
 `
+
+export const GET_APPOINTMENT_DETAILS = gql`
+  query GetAppointmentDetails($appointmentId: ID!) {
+    appointmentDetails(appointmentId: $appointmentId) {
+      appointmentId
+      appointmentDate
+      appointmentTime
+      doctorId
+      issueDescription
+      prescribedMedicines
+      status
+      additionalNotes
+    }
+  }
+`;
+

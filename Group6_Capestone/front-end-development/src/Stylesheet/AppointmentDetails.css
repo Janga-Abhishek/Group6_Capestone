@@ -1,0 +1,31 @@
+.appointment-details-container {
+    padding: 20px;
+    background-color: #f4f7f9; 
+    min-height: 100vh; 
+    margin-top: 40px;
+  }
+  
+  .appointment-details-content {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #ffffff; 
+    padding: 20px;
+    border-radius: 8px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  }
+  
+  .appointment-details-title {
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .appointment-details p {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #555; 
+  }
+  
+  .appointment-details p strong {
+    color: #333; 
+  }
+  

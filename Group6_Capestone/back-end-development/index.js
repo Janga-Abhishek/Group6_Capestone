@@ -199,6 +199,7 @@ const typeDefs = gql`
     bookedappointment(id: ID!): BookedAppointment
     userHistory(id: ID!): UserHistory
     userHistories(username: String!): [UserHistory]
+    appointmentDetails(appointmentId: ID!): [UserHistory]
     deleteBookedAppointment(id: ID!): BookedAppointment
     files: [File]
   }
@@ -454,6 +455,19 @@ const resolvers = {
       console.log("Received username:", username); // Log the input parameter
       try {
         const histories = await UserHistory.find({ username });
+        console.log("Fetched histories:", histories); // Log the fetched data
+        return histories;
+      } catch (error) {
+        console.error("Error fetching user histories:", error.message);
+        throw new Error("Error fetching user histories");
+      }
+    },
+
+    appointmentDetails: async (_, { appointmentId }) => {
+    
+      console.log("Received appointmentId:", appointmentId); // Log the input parameter
+      try {
+        const histories = await UserHistory.find({ appointmentId });
         console.log("Fetched histories:", histories); // Log the fetched data
         return histories;
       } catch (error) {
