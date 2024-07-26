@@ -5,7 +5,7 @@ import Footer from "../../components/Footer";
 import "../../Stylesheet/Login_Register.css";
 import { useMutation,useQuery } from "@apollo/client";
 import { GET_DEPARTMENTS, GET_DOCTORS_BY_DEPARTMENT, GET_AVAILABLE_DATES, GET_AVAILABLE_TIMES, BOOK_APPOINTMENT } from "../../graphql/middleware";
-
+import Chatbot from "../Chatbot/Chatbot"
 const formStyle = {
   display: 'flex',
   flexDirection: 'column',
@@ -59,6 +59,7 @@ const buttonStyle = {
 
 
 const BookAppointment = () =>{
+  const loggedInUser = sessionStorage.getItem("username");
     const [departmentId, setDepartmentId] = useState("");
     const [doctorId, setDoctorId] = useState("");
     const [appointmentDate,setAppointmentDate]= useState("");
@@ -226,6 +227,9 @@ const BookAppointment = () =>{
               <button type="submit" style={buttonStyle}>Book Appointment</button>
               <span className="successMessageStyle">{appointmentUpdate}</span>
             </form>
+          </div>
+          <div className="chatbot-container" style={{position:"fixed",bottom:"110px",right:"80px",width:"300px", zIndex: 999}}>
+            <Chatbot loggedInUser={loggedInUser}/>
           </div>
           <Footer />
         </div>
