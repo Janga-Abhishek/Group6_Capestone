@@ -14,3 +14,10 @@ npm install chart.js react-chartjs-2
 
 cd: front-end-development
 npm install emailjs-com --save
+
+
+Stripe Card Details
+---------------------------
+card no: 4242 4242 4242 4242
+expiry : 12/34
+cvv : 313
