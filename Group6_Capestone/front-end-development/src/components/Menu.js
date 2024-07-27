@@ -141,6 +141,20 @@ const Menu = () => {
                       Medical Records
                     </Link>
                   </li>
+                  <li className="liStyle">
+                    <Link
+                      to="/store"
+                      style={
+                        hoverIndex === 7
+                          ? { ...linkStyle, ...linkHoverStyle }
+                          : linkStyle
+                      }
+                      onMouseEnter={() => setHoverIndex(7)}
+                      onMouseLeave={() => setHoverIndex(null)}
+                    >
+                      Store
+                    </Link>
+                  </li>
                 </>
               )}
               {userType === "admin" && (

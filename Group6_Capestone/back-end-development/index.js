@@ -8,6 +8,9 @@ const { gql } = require("apollo-server");
 
 const cors = require("cors");
 const fs = require("fs");
+const Stripe = require('stripe');
+
+const stripe = Stripe('sk_test_51PfqqaRpKFld35aBgSUfz9fXd0SaJ2sEq4FEjfpnBiFSTP8un5TZL3Qfs7Ieei1mnbUQUhyA6KZIWiWzME1c7YXZ00sM18VzFu'); // Use your Stripe secret key
 
 // Connect to MongoDB
 mongoose
@@ -105,6 +108,15 @@ const UserHistorySchema = new mongoose.Schema({
 });
 const UserHistory = mongoose.model("UserHistory", UserHistorySchema);
 
+//PRODUCT SCHEMA
+const ProductSchema = new mongoose.Schema({
+  name: String,
+  description: String,
+  unitAmount: Number, 
+  currency: String,
+});
+const Product = mongoose.model("Product", ProductSchema);
+
 // Define GraphQL schema
 const typeDefs = gql`
   scalar Date
@@ -136,6 +148,19 @@ const typeDefs = gql`
     password: String!
     userType: String!
     registeredDate: Date!
+  }
+
+  #type of Product
+  type Product {
+    id: ID!
+    name: String!
+    description: String!
+    unitAmount: Int!
+    currency: String!
+  }
+
+  type PaymentIntent {
+    clientSecret: String!
   }
 
   #typedefs of doctor
@@ -202,9 +227,16 @@ const typeDefs = gql`
     appointmentDetails(appointmentId: ID!): [UserHistory]
     deleteBookedAppointment(id: ID!): BookedAppointment
     files: [File]
+    #QUERY FOR PRODUCTS PAYMENT
+    products: [Product]
+    product(id: ID!): Product
   }
 
   type Mutation {
+    #MUATAION FOR ADDING PRODUCT AND PAYMENT CREATION
+    createProduct(name: String!, description: String!, unitAmount: Int!, currency: String!): Product
+    createPaymentIntent(productId: ID!): PaymentIntent
+
     deleteBookedAppointment(id: ID!): BookedAppointment
     uploadFile(filename: String!, path: String!, mimetype: String!): File
 
@@ -269,6 +301,13 @@ const typeDefs = gql`
 // Define resolvers
 const resolvers = {
   Query: {
+    //QUERY TO RETIRVE PRODUCT DETAILS
+    products: async () => {
+      return await Product.find();
+    },
+    product: async (_, { id }) => {
+      return await Product.findById(id);
+    },
     files: async () => {
       return await File.find();
     },
@@ -478,6 +517,30 @@ const resolvers = {
   },
 
   Mutation: {
+    //MUTATION FOR PAYMENT CREATION AND PRODUCT
+    createPaymentIntent: async (_, { productId }) => {
+      const product = await Product.findById(productId);
+      if (!product) {
+        throw new Error('Product not found');
+      }
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: product.unitAmount,
+        currency: product.currency,
+        payment_method_types: ['card'],
+      });
+
+      return { clientSecret: paymentIntent.client_secret };
+    },
+    createProduct: async (_, { name, description, unitAmount, currency }) => {
+      const product = new Product({ name, description, unitAmount, currency });
+      try {
+        return await product.save();
+      } catch (error) {
+        console.error("Error creating product:", error);
+        throw new Error("Error creating product: " + error.message);
+      }
+    }, 
     uploadFile: async (_, { filename, path, mimetype }) => {
       const file = new File({ filename, path, mimetype });
       await file.save();

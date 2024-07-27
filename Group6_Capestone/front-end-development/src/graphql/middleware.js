@@ -1,5 +1,26 @@
 import { gql } from "@apollo/client";
 
+export const GET_PRODUCTS = gql`
+    query GetProducts {
+        products {
+            id
+            name
+            description
+            unitAmount
+            currency
+        }
+    }
+`;
+
+export const CREATE_PAYMENT_INTENT = gql`
+    mutation CreatePaymentIntent($productId: ID!) {
+        createPaymentIntent(productId: $productId) {
+            clientSecret
+        }
+    }
+`;
+
+
 export const LOGIN_USER = gql`
   mutation LoginUser($username: String!, $password: String!) {
     loginUser(username: $username, password: $password) {

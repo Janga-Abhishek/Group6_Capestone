@@ -19,6 +19,9 @@ import RegisterDepartment from "./pages/Administration/Admin/registerDepartment"
 import FileHandler from "./pages/User/FileUpload";
 import UserHistory from './pages/User/UserHistory';
 import UserAppointmentDetails from './pages/User/UserAppointmentDetails';
+import Store from "./pages/User/Store";
+import StripeCheckout from "./pages/User/StripeCheckout";
+
 const client = new ApolloClient({
   uri: "http://localhost:4000",
   cache: new InMemoryCache(),
@@ -48,6 +51,8 @@ const App = () => (
         <Route path="/uploadPrescription" element={<FileHandler />} />
         <Route path="/userAppointmentHistory" element={<UserHistory/>}/>
         <Route path="/UserAppointmentDetails/:id" element={<UserAppointmentDetails />}/>
+        <Route path="/store" element={<Store />}/>
+        <Route path="/stripeCheckout/:productId" element={<StripeCheckout />}/>
       </Routes>
     </Router>
   </ApolloProvider>
