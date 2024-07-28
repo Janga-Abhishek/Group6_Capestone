@@ -1,7 +1,7 @@
 .appointment-details-container {
     padding: 20px;
     background-color: #f4f7f9; 
-    min-height: 100vh; 
+    min-height: 150vh; 
     margin-top: 40px;
   }
   
@@ -11,12 +11,12 @@
     background: #ffffff; 
     padding: 20px;
     border-radius: 8px; 
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 2px 4px rgba(80, 75, 75, 0.1); 
   }
   
   .appointment-details-title {
     margin-bottom: 20px;
-    color: #333;
+    color: #3a28db;
   }
   
   .appointment-details p {
@@ -26,6 +26,65 @@
   }
   
   .appointment-details p strong {
-    color: #333; 
+    color: #3c3939; 
   }
+
+  .download-pdf-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .download-pdf-button:hover {
+    background-color: #45a049;
+  }
+  .document {
+    border: 2px solid #000;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #fff;
+  }
+  
+  .document-header, .document-footer {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .document-header h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #3a28db;
+  }
+  
+  .document-header p {
+    margin: 5px 0;
+    color: #333;
+  }
+  
+  .document-body p {
+    margin: 10px 0;
+    padding: 15px;
+    font-size: 18px;
+  }
+  
+  .download-pdf-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .download-pdf-button:hover {
+    background-color: #45a049;
+  }
+    
   
