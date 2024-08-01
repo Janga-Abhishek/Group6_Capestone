@@ -65,7 +65,13 @@
   border-radius: 50%;
   animation: rotateCoin 3s infinite;
 }
-
+.logoStyle1 {
+  height: 120px;
+  width: auto;
+  margin-bottom: 20px;
+  border: 1px solid black;
+  border-radius: 50%;
+}
 .errorStyle {
   color: red;
   font-size: 0.8em;

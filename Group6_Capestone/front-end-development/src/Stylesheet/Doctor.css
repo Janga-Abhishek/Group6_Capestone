@@ -70,3 +70,43 @@
 .detail-button:hover {
   background-color: #0a71b5;
 }
+
+.date-picker-container {
+  margin-bottom: 20px;
+}
+
+.date-picker {
+  width: 100%;
+  max-width: 200px;
+}
+
+.calendar-container {
+  max-width: 300px;
+}
+
+.calendar {
+  width: 100%;
+}
+
+.dashboard-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.appointments-section {
+  flex: 2;
+  margin-right: 20px;
+  margin-left: 15%;
+}
+
+.calendar-container {
+  flex: 1;
+  max-width: 300px;
+  margin-right: 5%;
+  margin-top: 8%;
+}
+
+.calendar {
+  width: 100%;
+}

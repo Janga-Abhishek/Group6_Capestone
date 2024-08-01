@@ -30,6 +30,9 @@ const CreateAppointment = () => {
   const [appointmentDate, setAppointmentDate] = useState("");
   const [appointmentTime, setAppointmentTime] = useState("");
 
+  const [filterDoctorName, setFilterDoctorName] = useState("");
+  const [filterDate, setFilterDate] = useState("");
+
   const handleShowCreateModal = () => setShowCreateModal(true);
   const handleCloseCreateModal = () => setShowCreateModal(false);
 
@@ -50,9 +53,22 @@ const CreateAppointment = () => {
   };
 
   const getDoctorName = (doctorId) => {
-    const doctor = doctorsData.doctors.find((doc) => doc.id === doctorId);
+    const doctor = doctorsData?.doctors.find((doc) => doc.id === doctorId);
     return doctor ? `${doctor.firstname} ${doctor.lastname}` : "Unknown Doctor";
   };
+
+  const filteredAppointments = appointmentsData?.appointments.filter(
+    (appointment) => {
+      const doctorName = getDoctorName(appointment.doctorId).toLowerCase();
+      const filterNameLower = filterDoctorName.toLowerCase();
+      const appointmentDateMatches =
+        !filterDate || appointment.appointmentDate === filterDate;
+      const doctorNameMatches =
+        !filterDoctorName || doctorName.includes(filterNameLower);
+
+      return doctorNameMatches && appointmentDateMatches;
+    }
+  );
 
   if (doctorsLoading) return <p>Loading doctors...</p>;
   if (doctorsError) return <p>Error : {doctorsError.message}</p>;
@@ -134,8 +150,30 @@ const CreateAppointment = () => {
             </form>
           </Modal.Body>
         </Modal>
+
+        <h3 className="mt-4">Filter Appointments</h3>
+        <div className="row">
+          <div className="col-md-6">
+            <input
+              type="text"
+              placeholder="Filter by doctor name"
+              className="form-control mb-2"
+              value={filterDoctorName}
+              onChange={(e) => setFilterDoctorName(e.target.value)}
+            />
+          </div>
+          <div className="col-md-6">
+            <input
+              type="date"
+              className="form-control mb-2"
+              value={filterDate}
+              onChange={(e) => setFilterDate(e.target.value)}
+            />
+          </div>
+        </div>
+
         <h3 className="mt-4">Appointments List</h3>
-        {appointmentsData.appointments.length === 0 ? (
+        {filteredAppointments.length === 0 ? (
           <p>No appointments available</p>
         ) : (
           <table className="table table-striped">
@@ -148,7 +186,7 @@ const CreateAppointment = () => {
               </tr>
             </thead>
             <tbody>
-              {appointmentsData.appointments.map((appointment) => (
+              {filteredAppointments.map((appointment) => (
                 <tr key={appointment.id}>
                   <td>{getDoctorName(appointment.doctorId)}</td>
                   <td>{appointment.appointmentDate}</td>
