@@ -28,10 +28,19 @@ const CreateAppointment = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [doctorId, setDoctorId] = useState("");
   const [appointmentDate, setAppointmentDate] = useState("");
-  const [appointmentTime, setAppointmentTime] = useState("");
-
   const [filterDoctorName, setFilterDoctorName] = useState("");
   const [filterDate, setFilterDate] = useState("");
+
+  const availableTimeSlots = [
+    "09:00 AM",
+    "10:00 AM",
+    "11:00 AM",
+    "12:00 PM",
+    "01:00 PM",
+    "02:00 PM",
+    "03:00 PM",
+    "04:00 PM",
+  ];
 
   const handleShowCreateModal = () => setShowCreateModal(true);
   const handleCloseCreateModal = () => setShowCreateModal(false);
@@ -40,15 +49,19 @@ const CreateAppointment = () => {
     e.preventDefault();
 
     try {
-      await createAppointment({
-        variables: { doctorId, appointmentDate, appointmentTime },
-      });
+      const promises = availableTimeSlots.map((time) =>
+        createAppointment({
+          variables: { doctorId, appointmentDate, appointmentTime: time },
+        })
+      );
+
+      await Promise.all(promises);
+
       setDoctorId("");
       setAppointmentDate("");
-      setAppointmentTime("");
       setShowCreateModal(false);
     } catch (err) {
-      console.error("Error creating appointment:", err.message);
+      console.error("Error creating appointments:", err.message);
     }
   };
 
@@ -118,34 +131,8 @@ const CreateAppointment = () => {
                   required
                 />
               </div>
-              <div className="form-group">
-                <label htmlFor="time">Time</label>
-                <select
-                  id="time"
-                  className="form-control"
-                  value={appointmentTime}
-                  onChange={(e) => setAppointmentTime(e.target.value)}
-                  required
-                >
-                  <option value="">Select Time</option>
-                  {[
-                    "09:00 AM",
-                    "10:00 AM",
-                    "11:00 AM",
-                    "12:00 PM",
-                    "01:00 PM",
-                    "02:00 PM",
-                    "03:00 PM",
-                    "04:00 PM",
-                  ].map((time) => (
-                    <option key={time} value={time}>
-                      {time}
-                    </option>
-                  ))}
-                </select>
-              </div>
               <Button variant="primary" type="submit">
-                Create Appointment
+                Create Appointments
               </Button>
             </form>
           </Modal.Body>
