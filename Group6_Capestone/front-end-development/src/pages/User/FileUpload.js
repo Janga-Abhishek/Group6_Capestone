@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import "../../Stylesheet/FileUpload.css";
+import Footer from "../../components/Footer";
+import Menu from "../../components/Menu";
 
 function FileUpload() {
   const [file, setFile] = useState(null);
@@ -66,27 +69,46 @@ function FileUpload() {
 
   return (
     <div>
-      <input type="file" onChange={onFileChange} />
-      <input
-        type="text"
-        placeholder="Document Name"
-        value={documentName}
-        onChange={onDocumentNameChange}
-      />
-      <button onClick={onUpload}>Upload</button>
-      <h2>My Documents</h2>
-      <ul>
+      <Menu/>
+    <div className="file-upload-container">
+      <h1 className="page-title">UPLOAD PRESCRIPTION</h1>
+      <div className="upload-form">
+        <input
+          type="file"
+          onChange={onFileChange}
+          className="file-input"
+        />
+        <input
+          type="text"
+          placeholder="Document Name"
+          value={documentName}
+          onChange={onDocumentNameChange}
+          className="document-name-input"
+        />
+        <button onClick={onUpload} className="upload-button">
+          Upload
+        </button>
+      </div>
+      <h2 className="documents-title">My Documents</h2>
+      <ul className="documents-list">
         {documents.length === 0 ? (
           <p>No documents found.</p>
         ) : (
           documents.map((doc) => (
-            <li key={doc._id}>
-              {doc.documentName}
-              <button onClick={() => viewFile(doc.filename)}>View</button>
+            <li key={doc._id} className="document-item">
+              <span className="document-name">{doc.documentName}</span>
+              <button
+                onClick={() => viewFile(doc.filename)}
+                className="view-button"
+              >
+                View
+              </button>
             </li>
           ))
         )}
       </ul>
+    </div>
+    <Footer/>
     </div>
   );
 }

@@ -447,20 +447,29 @@ const resolvers = {
     },
 
     availableDates: async (_, { doctorId }) => {
-      // Fetch and return available dates for the given doctor ID
-      const appointments = await Appointment.find({
-        doctorId,
-        status: "Available",
+      const today = new Date();
+      const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  
+      // Fetch appointments
+       const appointments = await Appointment.find({
+       doctorId,
+       status: "Available",
       });
+  
+     // Remove duplicates
       const removeDuplicates = (array, key) => {
-        return [...new Map(array.map((item) => [item[key], item])).values()];
+       return [...new Map(array.map((item) => [item[key], item])).values()];
       };
+  
+      const uniqueAppointments = removeDuplicates(appointments, "appointmentDate");
 
-      const uniqueAppointments = removeDuplicates(
-        appointments,
-        "appointmentDate"
-      );
-      return uniqueAppointments;
+      // Filter out past dates
+      const filteredAppointments = uniqueAppointments.filter(appointment => {
+      const appointmentDate = new Date(appointment.appointmentDate);
+      return appointmentDate >= startOfToday;
+      });
+     console.log(filteredAppointments);
+    return filteredAppointments;
     },
 
     availableTimes: async (_, { doctorId, appointmentDate }) => {
