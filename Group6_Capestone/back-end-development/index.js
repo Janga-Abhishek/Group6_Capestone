@@ -91,10 +91,7 @@ const UserAppointmentSchema = new mongoose.Schema({
   subscription: Boolean,
   doctorId: { type: mongoose.Types.ObjectId, ref: "Doctor" },
 });
-const BookedAppointment = mongoose.model(
-  "BookedAppointment",
-  UserAppointmentSchema
-);
+const BookedAppointment = mongoose.model("BookedAppointment",UserAppointmentSchema);
 const UserHistorySchema = new mongoose.Schema({
   username: String,
   appointmentId: { type: mongoose.Types.ObjectId, ref: "BookedAppointment" },
@@ -230,6 +227,7 @@ const typeDefs = gql`
     #QUERY FOR PRODUCTS PAYMENT
     products: [Product]
     product(id: ID!): Product
+    getUpcomingAppointments(username: String!): [Appointment!]
   }
 
   type Mutation {
@@ -409,17 +407,6 @@ const resolvers = {
       }
     },
 
-    // bookedappointments: async () => {
-    //   try {
-    //     const bookedAppointments = await BookedAppointment.find();
-    //     const validAppointments = bookedAppointments.filter(
-    //       (appointment) => appointment.username !== null
-    //     );
-    //     return validAppointments;
-    //   } catch (error) {
-    //     throw new Error("Error fetching booked appointments");
-    //   }
-    // },
     bookedappointments: async (_, { doctorId, date }) => {
       try {
         console.log("Doctor ID:", doctorId);
@@ -490,15 +477,6 @@ const resolvers = {
       return uniqueAppointments;
     },
 
-    // userHistory: async (_, { id }) => {
-    //   try {
-    //     const history = await UserHistory.findById(id);
-    //     return history;
-    //   } catch (error) {
-    //     throw new Error("Error fetching user history");
-    //   }
-    // },
-
     userHistories: async (_, { username }) => {
       console.log("Received username:", username); // Log the input parameter
       try {
@@ -523,6 +501,21 @@ const resolvers = {
         throw new Error("Error fetching user histories");
       }
     },
+
+    getUpcomingAppointments: async (_, { username }) => {
+      const today = new Date();
+      const fiveDaysLater = new Date();
+      fiveDaysLater.setDate(today.getDate() + 5);
+
+      return await BookedAppointment.find({
+        username,
+        appointmentDate: {
+          $gte: today.toISOString().split('T')[0],
+          $lte: fiveDaysLater.toISOString().split('T')[0],
+        },
+      }).sort({ appointmentDate: 1, appointmentTime: 1 }).limit(1);
+    },
+    
   },
 
   Mutation: {

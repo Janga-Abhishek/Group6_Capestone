@@ -4,6 +4,9 @@ import Menu from "../../components/Menu";
 import Banner from "../../components/Banner";
 import Footer from "../../components/Footer";
 import PopUpModal from "../../components/PopUpModal";
+import { useQuery } from "@apollo/client";
+import AppointmentPopUp from "../../components/AppointmentPopUp";
+import { GET_UPCOMING_APPOINTMENT } from "../../graphql/middleware";
 
 const containerStyle = {
   display: "flex",
@@ -51,7 +54,20 @@ const navTextStyle = {
 const UserDashboard = () => {
   const [username, setUsername] = useState("");
   const [openModal, setCloseModal] = useState(false);
+  const [appOpenModal, setOpenModal] = useState(false);
+  const [appointment, setAppointment] = useState(null);
   const navigate = useNavigate();
+
+  const { data } = useQuery(GET_UPCOMING_APPOINTMENT, {
+    variables: { username },
+    skip: !username,
+    onCompleted: (data) => {
+      if (data?.getUpcomingAppointments?.length > 0) {
+        setAppointment(data.getUpcomingAppointments[0]);
+        setOpenModal(true);
+      }
+    },
+  });
 
   useEffect(() => {
     const storedUsername = sessionStorage.getItem("username");
@@ -62,6 +78,8 @@ const UserDashboard = () => {
     }
     setCloseModal(true);
   }, [navigate]);
+
+  const appCloseModal = () => setOpenModal(false);
   const closeModal = () => setCloseModal(false);
 
   return (
@@ -106,6 +124,8 @@ const UserDashboard = () => {
       </div>
       <Footer />
       <PopUpModal openModal={openModal} closeModal={closeModal}/>
+      <AppointmentPopUp isOpen={appOpenModal} onClose={appCloseModal} appointment={appointment} />
+
     </div>
   );
 };

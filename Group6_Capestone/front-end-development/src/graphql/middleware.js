@@ -335,3 +335,12 @@ export const GET_APPOINTMENT_DETAILS = gql`
   }
 `;
 
+export const GET_UPCOMING_APPOINTMENT = gql`
+query GetUpcomingAppointments($username: String!) {
+  getUpcomingAppointments(username: $username) {
+    appointmentDate
+    appointmentTime
+  }
+}
+`;
+
