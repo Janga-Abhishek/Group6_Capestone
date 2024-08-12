@@ -89,7 +89,7 @@ const BookAppointment = () => {
     if (dateData?.availableDates) {
       const today = new Date().toISOString().split('T')[0];
       const futureDates = dateData.availableDates.filter(date => date.appointmentDate >= today);
-      const sortedDates = futureDates.sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate));
+      const sortedDates = [...futureDates].sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate));
       setFilteredDates(sortedDates);
     }
   }, [dateData]);
@@ -104,11 +104,11 @@ const BookAppointment = () => {
         ? timeData.availableTimes.filter(time => time.appointmentTime > currentTime)
         : timeData.availableTimes;
 
-      const sortedTimes = filteredTimes.sort((a, b) => {
-        const timeA = new Date(`1970-01-01T${a.appointmentTime}:00`).getTime();
-        const timeB = new Date(`1970-01-01T${b.appointmentTime}:00`).getTime();
-        return timeA - timeB;
-      });
+        const sortedTimes = [...filteredTimes].sort((a, b) => {
+          const timeA = new Date(`1970-01-01T${a.appointmentTime}:00`).getTime();
+          const timeB = new Date(`1970-01-01T${b.appointmentTime}:00`).getTime();
+          return timeA - timeB;
+        });
 
       setAvailableTimes(sortedTimes.map(time => time.appointmentTime));
     }
