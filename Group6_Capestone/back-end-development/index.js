@@ -237,6 +237,10 @@ const typeDefs = gql`
     product(id: ID!): Product
     getUpcomingAppointments(username: String!): [Appointment!]
     getUpcomingAppointmentsUser(username: String!): [UpcomingAppointment!]!
+
+    doctorsCount:Int
+    appointmentsCount:Int
+    usersCount:Int
     
   }
 
@@ -545,8 +549,38 @@ const resolvers = {
         console.error("Error fetching upcoming appointments:", error);
         throw new Error("Failed to fetch upcoming appointments");
       }
-    }
-    
+    },
+    //counts
+    doctorsCount:async()=>{
+      try{
+        const totalCount=await Doctor.countDocuments();
+        return totalCount;
+      }
+      catch(error)
+      {
+        throw new Error("Error in fetching the doctor count")
+      }
+    },
+    appointmentsCount:async()=>{
+      try{
+        const totalCount=await Appointment.countDocuments();
+        return totalCount;
+      }
+      catch(error)
+      {
+        throw new Error("Error in fetching the appointment count")
+      }
+    },
+    usersCount:async()=>{
+      try{
+        const totalCount=await User.countDocuments();
+        return totalCount;
+      }
+      catch(error)
+      {
+        throw new Error("Error in fetching the users count")
+      }
+    },
   },
 
   Mutation: {
