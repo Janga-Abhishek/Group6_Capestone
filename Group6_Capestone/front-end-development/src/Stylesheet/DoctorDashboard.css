@@ -1,0 +1,26 @@
+.doctor-cards-container
+{
+    display: flex;
+    flex-wrap: wrap;
+}
+.doctor-card
+{
+    width: 25%;
+    padding: 2rem;
+    margin: 1rem;
+    background-color: #F9FAFB;
+    box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;
+    text-transform: uppercase;
+}
+
+.initials h2
+{
+    text-align: center;
+    color: rgb(25, 25, 161);
+    margin: 1rem ;
+    border-bottom: 1px solid rgb(47, 145, 67);
+    font-weight: 900;
+    font-size: xx-large;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    text-transform: uppercase;
+}

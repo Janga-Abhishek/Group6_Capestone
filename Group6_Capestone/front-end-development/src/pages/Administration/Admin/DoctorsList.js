@@ -3,9 +3,10 @@ import { useQuery } from "@apollo/client";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { GET_DOCTORS } from "../../../graphql/middleware";
 import Menu from "../../../components/Menu";
-import Table from "react-bootstrap/Table";
+import Card from "react-bootstrap/Card";
 import Modal from "react-bootstrap/Modal";
 import AddDoctorModal from "./AddDoctorModal";
+import '../../../Stylesheet/DoctorDashboard.css'
 
 export default function DoctorsList() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,12 +33,13 @@ export default function DoctorsList() {
 
   const handleAddDoctor = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
+  
   return (
     <div>
       <Menu />
-      <div className="doctor-main-container">
-        <div className="doctor-search-add d-flex w-90 justify-content-between p-2 m-3 border border-success align-items-center">
-          <div className="doctor-search w-50 border-border-primary">
+      <div className="doctor-main-container mt-5">
+        <div className="doctor-search-add d-flex w-80 justify-content-center align-items-center">
+          <div className="doctor-search w-50">
             <input
               className="w-100 p-2 rounded"
               type="text"
@@ -46,40 +48,31 @@ export default function DoctorsList() {
               onChange={handleSearchChange}
             />
           </div>
-          <div className="doctor-add w-25">
-            {/* <a href="#" className="text-decoration-none bg-success text-white p-2 w-50 rounded"> */}
+          <div className="doctor-add w-25 ">
             <button
-              className="bg bg-success p-2 text-white border border-none rounded"
+              className="bg bg-success p-2  text-white border border-none rounded"
               onClick={handleAddDoctor}
             >
               Add Doctor
             </button>
           </div>
         </div>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
-              <th>Mobile</th>
-              <th>Address</th>
-              <th>Role</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredDoctors.map((doctor) => (
-              <tr key={doctor.id}>
-                <td>{doctor.firstname}</td>
-                <td>{doctor.lastname}</td>
-                <td>{doctor.email}</td>
-                <td>{doctor.phonenumber}</td>
-                <td>{doctor.address}</td>
-                <td>{doctor.userType}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <div className="doctor-cards-container d-flex flex-wrap justify-content-around mt-5">
+          {filteredDoctors.map((doctor) => (
+            <Card key={doctor.id} className="doctor-card">
+              <Card.Body>
+                <span className="initials"><h2>{doctor.firstname[0]} {doctor.lastname[0]}</h2></span>
+                <Card.Title className="mt-2 p-1">{doctor.firstname} {doctor.lastname}</Card.Title>
+                <Card.Subtitle className="mb-2 text-muted p-1">{doctor.userType}</Card.Subtitle>
+                <Card.Text>
+                  <strong className="p-1 m-1">Email:</strong> {doctor.email}<br />
+                  <strong className="p-1 m-1">Mobile:</strong> {doctor.phonenumber}<br />
+                  <strong className="p-1 m-1">Address:</strong> {doctor.address}
+                </Card.Text>
+              </Card.Body>
+            </Card>
+          ))}
+        </div>
       </div>
 
       <Modal show={showModal} onHide={handleCloseModal} size="lg">
