@@ -344,3 +344,13 @@ query GetUpcomingAppointments($username: String!) {
 }
 `;
 
+export const GET_UPCOMING_APPOINTMENTS_USER = gql`
+  query GetUpcomingAppointmentsUser($username: String!) {
+    getUpcomingAppointmentsUser(username: $username) {
+      appointmentId
+      appointmentDate
+      appointmentTime
+      doctorName
+    }
+  }
+`;

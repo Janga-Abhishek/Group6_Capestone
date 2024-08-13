@@ -10,6 +10,7 @@ const cors = require("cors");
 const fs = require("fs");
 const Stripe = require('stripe');
 
+
 const stripe = Stripe('sk_test_51PfqqaRpKFld35aBgSUfz9fXd0SaJ2sEq4FEjfpnBiFSTP8un5TZL3Qfs7Ieei1mnbUQUhyA6KZIWiWzME1c7YXZ00sM18VzFu'); // Use your Stripe secret key
 
 // Connect to MongoDB
@@ -203,6 +204,13 @@ const typeDefs = gql`
     departmentname: String!
   }
 
+  type UpcomingAppointment {
+  appointmentId: ID!
+  appointmentDate: String!
+  appointmentTime: String!
+  doctorName: String!
+ }
+
   type Query {
     user(id: ID!): User
     users: [User]
@@ -228,6 +236,8 @@ const typeDefs = gql`
     products: [Product]
     product(id: ID!): Product
     getUpcomingAppointments(username: String!): [Appointment!]
+    getUpcomingAppointmentsUser(username: String!): [UpcomingAppointment!]!
+    
   }
 
   type Mutation {
@@ -481,7 +491,7 @@ const resolvers = {
       console.log("Received username:", username); // Log the input parameter
       try {
         const histories = await UserHistory.find({ username });
-        console.log("Fetched histories:", histories); // Log the fetched data
+       // console.log("Fetched histories:", histories); // Log the fetched data
         return histories;
       } catch (error) {
         console.error("Error fetching user histories:", error.message);
@@ -494,7 +504,7 @@ const resolvers = {
       console.log("Received appointmentId:", appointmentId); // Log the input parameter
       try {
         const histories = await UserHistory.find({ appointmentId });
-        console.log("Fetched histories:", histories); // Log the fetched data
+       // console.log("Fetched histories:", histories); // Log the fetched data
         return histories;
       } catch (error) {
         console.error("Error fetching user histories:", error.message);
@@ -515,6 +525,27 @@ const resolvers = {
         },
       }).sort({ appointmentDate: 1, appointmentTime: 1 }).limit(1);
     },
+
+    getUpcomingAppointmentsUser: async (_, { username }) => {
+      try {
+        // Find upcoming appointments for the given username
+        const appointments = await BookedAppointment.find({
+          username,
+          appointmentDate: { $gte: new Date().toISOString().split('T')[0] }
+        }).populate('doctorId'); // Populate doctorId to get doctor details
+        console.log('6',appointments);
+        // Map over appointments and include doctor's name
+        return appointments.map(appointment => ({
+          appointmentId: appointment._id,
+          appointmentDate: appointment.appointmentDate,
+          appointmentTime: appointment.appointmentTime,
+          doctorName: `${appointment.doctorId.firstname} ${appointment.doctorId.lastname}`
+        }));
+      } catch (error) {
+        console.error("Error fetching upcoming appointments:", error);
+        throw new Error("Failed to fetch upcoming appointments");
+      }
+    }
     
   },
 

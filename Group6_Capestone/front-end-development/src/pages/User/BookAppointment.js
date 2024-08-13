@@ -55,6 +55,14 @@ const buttonStyle = {
   transition: "background-color 0.3s ease",
 };
 
+const linkStyle = {
+  display: "block",
+  marginTop: "10px",
+  textAlign: "center",
+  textDecoration: "none",
+  color: "#1192DC",
+};
+
 const BookAppointment = () => {
   const loggedInUser = sessionStorage.getItem("username");
   const [departmentId, setDepartmentId] = useState("");
@@ -255,7 +263,11 @@ const BookAppointment = () => {
           </div>
           <button type="submit" style={buttonStyle}>Book Appointment</button>
           <span className="successMessageStyle">{appointmentUpdate}</span>
+          <Link to="/upcoming-appointments" style={linkStyle}>
+          View Upcoming Appointments
+        </Link>
         </form>
+        
       </div>
       <div className="chatbot-container" style={{ position: "fixed", bottom: "110px", right: "80px", width: "300px", zIndex: 999 }}>
         <Chatbot loggedInUser={loggedInUser} />

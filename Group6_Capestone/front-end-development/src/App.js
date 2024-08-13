@@ -21,6 +21,7 @@ import UserHistory from './pages/User/UserHistory';
 import UserAppointmentDetails from './pages/User/UserAppointmentDetails';
 import Store from "./pages/User/Store";
 import StripeCheckout from "./pages/User/StripeCheckout";
+import UpcomingAppointments from './pages/User/UpcomingAppointments';
 
 const client = new ApolloClient({
   uri: "http://localhost:4000",
@@ -53,6 +54,8 @@ const App = () => (
         <Route path="/UserAppointmentDetails/:id" element={<UserAppointmentDetails />}/>
         <Route path="/store" element={<Store />}/>
         <Route path="/stripeCheckout/:productId" element={<StripeCheckout />}/>
+        <Route path="/upcoming-appointments" element={<UpcomingAppointments/>}/>
+
       </Routes>
     </Router>
   </ApolloProvider>
