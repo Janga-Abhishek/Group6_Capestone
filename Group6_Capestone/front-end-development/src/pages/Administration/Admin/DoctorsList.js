@@ -38,7 +38,7 @@ export default function DoctorsList() {
     <div>
       <Menu />
       <div className="doctor-main-container mt-5">
-        <div className="doctor-search-add d-flex w-80 justify-content-center align-items-center">
+        <div className="doctor-search-add d-flex w-80 mb-5 mt-5 justify-content-center align-items-center">
           <div className="doctor-search w-50">
             <input
               className="w-100 p-2 rounded"
@@ -48,6 +48,7 @@ export default function DoctorsList() {
               onChange={handleSearchChange}
             />
           </div>
+
           <div className="doctor-add w-25 ">
             <button
               className="bg bg-success p-2  text-white border border-none rounded"

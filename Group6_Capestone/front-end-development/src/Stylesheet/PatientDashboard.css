@@ -1,9 +1,9 @@
-.doctor-cards-container
+.patient-cards-container
 {
     display: flex;
     flex-wrap: wrap;
 }
-.doctor-card
+.patient-card
 {
     width: 25%;
     padding: 2rem;
@@ -25,10 +25,10 @@
     text-transform: uppercase;
 }
 
-.doctor-card {
+.patient-card {
     transition: border 0.5s ease; /* Smooth transition for background color */
   }
   
-  .doctor-card:hover {
-    border-bottom:8px solid #092867; /* Light background color on hover */
+  .patient-card:hover {
+    border-bottom:8px solid #09671e; /* Light background color on hover */
   }

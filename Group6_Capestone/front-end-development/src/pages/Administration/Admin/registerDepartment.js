@@ -2,6 +2,10 @@ import { useState } from "react";
 import Menu from "../../../components/Menu";
 import { useMutation } from "@apollo/client";
 import { REGISTER_DEPARTMENT } from "../../../graphql/middleware";
+import '../../../Stylesheet/RegisterDepartment.css'
+import { toast, ToastContainer } from 'react-toastify'; // Import toast and ToastContainer
+import 'react-toastify/dist/ReactToastify.css'; 
+
 
 export default function RegisterDepartment() {
     const [departmentName, setDepartmentName] = useState('');
@@ -16,18 +20,18 @@ export default function RegisterDepartment() {
                 }
             });
             console.log('Department registered:', data.RegisterDepartment);
-            // Optionally, you can reset the departmentName state after successful registration
+            toast.success('Department has been successfully registered!', { position:"bottom-center" });
             setDepartmentName('');
         } catch (error) {
             console.error('Error registering department:', error.message);
-            // Handle error state or notify user
+            toast.error('Error registering department: ' + error.message, { position:"bottom-center" });
         }
     };
 
     return (
         <div>
             <Menu />
-            <div className="mt-5 text-center">
+            <div className="department-container text-center w-50 mx-auto">
                 <h1>Register Department</h1>
                 <form onSubmit={handleDepartmentRegistration}>
                     <input
@@ -43,6 +47,7 @@ export default function RegisterDepartment() {
                     </button>
                 </form>
             </div>
+            <ToastContainer className="w-50" />
         </div>
     );
 }

@@ -3,6 +3,8 @@ import { useQuery } from "@apollo/client";
 import { GET_USERS } from "../../../graphql/middleware";
 import Table from "react-bootstrap/Table";
 import Menu from "../../../components/Menu";
+import '../../../Stylesheet/PatientDashboard.css'
+import Card from "react-bootstrap/Card";
 
 export default function PatientsList() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,9 +26,9 @@ export default function PatientsList() {
   return (
     <div>
       <Menu />
-      <div className="doctor-main-container">
-        <div className="doctor-search-add d-flex w-90 justify-content-between p-2 m-3 border border-success align-items-center">
-          <div className="doctor-search w-50 border-border-primary">
+      <div className="patient-main-container mt-5">
+        <div className="patient-search-add d-flex w-80 mb-5 mt-5 justify-content-center align-items-center">
+          <div className="patient-search w-50">
             <input
               className="w-100 p-2 rounded"
               type="text"
@@ -35,36 +37,26 @@ export default function PatientsList() {
               onChange={handleSearchChange}
             />
           </div>
-          {/* <div className="doctor-add w-25">
-             <a href="#" className="text-decoration-none bg-success text-white p-2 w-50 rounded"> 
-              <button className="bg bg-success p-2 text-white border border-none rounded" onClick={handleAddDoctor}>Add Doctor</button>
-            </div>*/}
         </div>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
-              <th>Mobile</th>
-              <th>Address</th>
-              <th>Role</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredPatients.map((patient) => (
-              <tr key={patient.id}>
-                <td>{patient.firstname}</td>
-                <td>{patient.lastname}</td>
-                <td>{patient.email}</td>
-                <td>{patient.phonenumber}</td>
-                <td>{patient.address}</td>
-                <td>{patient.userType}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <div className="patient-cards-container d-flex flex-wrap justify-content-around mt-5">
+          {filteredPatients.map((patient) => (
+            <Card key={patient.id} className="patient-card">
+              <Card.Body>
+                <span className="initials"><h2>{patient.firstname[0]} {patient.lastname[0]}</h2></span>
+                <Card.Title className="mt-2 p-1">{patient.firstname} {patient.lastname}</Card.Title>
+                <Card.Subtitle className="mb-2 text-muted p-1">{patient.userType}</Card.Subtitle>
+                <Card.Text>
+                  <strong className="p-1 m-1">Email:</strong> {patient.email}<br />
+                  <strong className="p-1 m-1">Mobile:</strong> {patient.phonenumber}<br />
+                  <strong className="p-1 m-1">Address:</strong> {patient.address}
+                </Card.Text>
+              </Card.Body>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );
 }
+
+ 
