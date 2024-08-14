@@ -112,6 +112,7 @@ const ProductSchema = new mongoose.Schema({
   description: String,
   unitAmount: Number, 
   currency: String,
+  imageUrl:String
 });
 const Product = mongoose.model("Product", ProductSchema);
 
@@ -155,6 +156,7 @@ const typeDefs = gql`
     description: String!
     unitAmount: Int!
     currency: String!
+    imageUrl:String!
   }
 
   type PaymentIntent {
