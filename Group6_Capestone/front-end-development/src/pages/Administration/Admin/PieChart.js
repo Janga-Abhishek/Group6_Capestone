@@ -9,7 +9,7 @@ export const GET_COUNTS = gql`
   query GetCounts {
     doctorsCount
     appointmentsCount
-    usersCount
+    productsCount
   }
 `;
 
@@ -19,12 +19,12 @@ export default function PieChart() {
 
     useEffect(() => {
         if (!loading && data) {
-            const { doctorsCount, appointmentsCount, usersCount } = data;
+            const { doctorsCount, appointmentsCount, productsCount } = data;
             setChartData({
-                labels: ['Doctors', 'Appointments', 'Patients'],
+                labels: ['Doctors', 'Appointments', 'Products'],
                 datasets: [
                     {
-                        data: [doctorsCount, appointmentsCount, usersCount],
+                        data: [doctorsCount, appointmentsCount, productsCount],
                         backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
                         hoverOffset: 4
                     }

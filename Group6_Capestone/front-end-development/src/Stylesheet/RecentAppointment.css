@@ -1,0 +1,21 @@
+.main-recentappointment-container
+{
+    width: 90%;
+    margin: auto;
+}
+.appointments-container
+{
+    width: 60%;
+    margin: 5rem 1rem 5rem 1rem;
+    padding: 1rem;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 1rem;
+}
+.stripe-container
+{
+    width: 25%;
+    margin: 5rem 1rem 5rem 1rem;
+    padding: 1rem;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 1rem;
+}

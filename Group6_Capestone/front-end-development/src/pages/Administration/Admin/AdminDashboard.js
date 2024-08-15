@@ -5,6 +5,7 @@ import BarChart from "./BarChart";
 import AdminMenu from "../../../components/AdminMenu";
 import '../../../Stylesheet/AdminDashboard.css';
 import PieChart from "./PieChart";
+import RecentAppointments from "./RecentAppointments";
 const AdminDashboard = () => {
   useEffect(() => {
     const userType = sessionStorage.getItem("userType");
@@ -26,6 +27,9 @@ const AdminDashboard = () => {
         <div className="pie-chart-container">
           <PieChart className="piechart" />
         </div>
+      </div>
+      <div>
+        <RecentAppointments />
       </div>
     </div>
   );

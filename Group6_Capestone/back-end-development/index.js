@@ -242,7 +242,8 @@ const typeDefs = gql`
 
     doctorsCount:Int
     appointmentsCount:Int
-    usersCount:Int
+    productsCount:Int
+    getRecentAppointments(limit:Int!):[BookedAppointment]
     
   }
 
@@ -573,9 +574,9 @@ const resolvers = {
         throw new Error("Error in fetching the appointment count")
       }
     },
-    usersCount:async()=>{
+    productsCount:async()=>{
       try{
-        const totalCount=await User.countDocuments();
+        const totalCount=await Product.countDocuments();
         return totalCount;
       }
       catch(error)
@@ -583,6 +584,19 @@ const resolvers = {
         throw new Error("Error in fetching the users count")
       }
     },
+
+    getRecentAppointments:async(_,{limit})=>{
+      try{
+        const recentAppointments=await BookedAppointment.find()
+        .sort({appointmentDate:-1, appointmentTime:-1})
+        .limit(limit);
+        return recentAppointments;
+      }
+      catch(error)
+      {
+        throw new Error('Error in getting recent appointments'+error.message);
+      }
+    }
   },
 
   Mutation: {

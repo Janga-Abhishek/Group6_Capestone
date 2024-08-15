@@ -355,3 +355,12 @@ export const GET_UPCOMING_APPOINTMENTS_USER = gql`
     }
   }
 `;
+export const GET_RECENT_APPOINTMENTS_DETAILS=gql`
+query GetRecentAppointments($limit: Int!) {
+  getRecentAppointments(limit: $limit) {
+    username
+    appointmentDate
+    appointmentTime
+  }
+}
+`;
