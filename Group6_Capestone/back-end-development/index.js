@@ -244,6 +244,9 @@ const typeDefs = gql`
     appointmentsCount:Int
     productsCount:Int
     getRecentAppointments(limit:Int!):[BookedAppointment]
+    getRecentRegisteredUsers(limit: Int!): [User]
+    #QUERY FOR STRIPE TRANSACTION
+    getStripeTransactionAmount: Float!
     
   }
 
@@ -596,7 +599,31 @@ const resolvers = {
       {
         throw new Error('Error in getting recent appointments'+error.message);
       }
+    },
+
+    getRecentRegisteredUsers: async (_, { limit }) => {
+      try {
+        const recentUsers = await User.find()
+          .sort({ registeredDate: -1 }) 
+          .limit(limit); 
+        return recentUsers;
+      } catch (error) {
+        throw new Error("Error fetching recent registered users: " + error.message);
+      }
+    },
+    //stripe payment summary
+    getStripeTransactionAmount:async () =>{
+      try{
+        const charges = await stripe.charges.list({ limit: 100 });
+        const totalSum=charges.data.reduce((sum, charge) => sum + charge.amount / 100, 0);
+        return totalSum;
+      }
+      catch(error)
+      {
+        throw new Error("Error fetching stripe payment summary: " + error.message)
+      }
     }
+
   },
 
   Mutation: {

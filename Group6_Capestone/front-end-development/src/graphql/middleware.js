@@ -364,3 +364,20 @@ query GetRecentAppointments($limit: Int!) {
   }
 }
 `;
+
+export const GET_RECENT_REGISTERED_USERS=gql`
+query GetRecentRegisteredUsers($limit:Int!){
+  getRecentRegisteredUsers(limit:$limit){
+    firstname
+    lastname
+    email
+    registeredDate
+  }
+}
+`;
+
+export const GET_STRIPE_PAYMENT_SUMMARY=gql`
+query GetStripeTransactionAmount{
+  getStripeTransactionAmount
+}
+`
